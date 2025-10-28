@@ -1,0 +1,14 @@
+services:
+  valkey:
+    image: valkey/valkey
+    ports:
+      - 6379:6379
+    volumes:
+      - ./valkey_storage:/data
+
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - 6333:6333
+    volumes:
+      - ./qdrant_storage:/qdrant/storage

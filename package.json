@@ -1,0 +1,22 @@
+{
+  "name": "neurix",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "db:run": "sh run-pg-db.sh",
+    "docker:up": "docker compose up",
+    "docker:down": "docker compose down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anirudhaxe/neurix.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anirudhaxe/neurix/issues"
+  },
+  "homepage": "https://github.com/anirudhaxe/neurix#readme"
+}
