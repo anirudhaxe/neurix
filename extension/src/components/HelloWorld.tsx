@@ -7,18 +7,17 @@ export default function HelloWorld(props: { msg: string }) {
     <>
       <h1>{props.msg}</h1>
 
-      <div className="card">
+      <div className="p-8">
         <button type="button" onClick={() => setCount(count + 1)}>
           count is {count}
         </button>
         <p>
-          Edit
-          <code>src/components/HelloWorld.tsx</code> to test HMR
+          Edit <code>src/components/HelloWorld.tsx</code> to test HMR
         </p>
       </div>
 
       <p>
-        Check out
+        Check out{" "}
         <a
           href="https://github.com/crxjs/create-crxjs"
           target="_blank"
@@ -29,7 +28,7 @@ export default function HelloWorld(props: { msg: string }) {
         , the official starter
       </p>
 
-      <p className="read-the-docs">
+      <p className="text-gray-500">
         Click on the Vite, React and CRXJS logos to learn more
       </p>
     </>
