@@ -1,14 +1,6 @@
-# React + Vite + CRXJS
+# Neurix - Browser Extension
 
-This template helps you quickly start developing Chrome extensions with React, TypeScript and Vite. It includes the CRXJS Vite plugin for seamless Chrome extension development.
-
-## Features
-
-- React with TypeScript
-- TypeScript support
-- Vite build tool
-- CRXJS Vite plugin integration
-- Chrome extension manifest configuration
+Built with React, TypeScript, and Vite
 
 ## Quick Start
 
@@ -34,9 +26,12 @@ npm run build
 
 ## Project Structure
 
-- `src/popup/` - Extension popup UI
-- `src/content/` - Content scripts
-- `manifest.config.ts` - Chrome extension manifest configuration
+- `src/popup/` - Main extension popup UI (400x600px)
+- `src/sidepanel/` - Side panel interface for extended functionality
+- `src/content/` - Content script
+- `src/components/` - Reusable UI components
+- `src/index.css` - Global styles and design tokens
+- `manifest.config.ts` - Extension manifest configuration
 
 ## Documentation
 
@@ -44,9 +39,7 @@ npm run build
 - [Vite Documentation](https://vitejs.dev/)
 - [CRXJS Documentation](https://crxjs.dev/vite-plugin)
 
-## Chrome Extension Development Notes
+## Extension Development Notes
 
 - Use `manifest.config.ts` to configure your extension
 - The CRXJS plugin automatically handles manifest generation
-- Content scripts should be placed in `src/content/`
-- Popup UI should be placed in `src/popup/`
