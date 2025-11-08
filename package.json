@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "db:run": "sh run-pg-db.sh",
-    "docker:up": "docker compose up",
+    "docker:up": "docker compose up -d",
     "docker:down": "docker compose down"
   },
   "repository": {

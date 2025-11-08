@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hono/node-server": "1.19.6",
+    "bullmq": "5.63.0",
     "dotenv": "17.2.3",
     "hono": "4.10.4",
     "http-status-codes": "2.3.0"
