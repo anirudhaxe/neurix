@@ -4,6 +4,27 @@ import ParticleBackground from "@/components/ParticleBackground";
 export default function App() {
   const [activeTab, setActiveTab] = useState<"page" | "link" | "file">("page");
 
+  const handleScanPage = async () => {
+    try {
+      // Get active tab
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab.id) return;
+
+      // Execute script to extract text
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => document.body.innerText,
+      });
+
+      const text = results[0].result;
+
+      // Send to background
+      chrome.runtime.sendMessage({ action: 'scanPage', text });
+    } catch (error) {
+      console.error('Error scanning page:', error);
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-[#0a0a0f] text-white overflow-hidden">
       {/* Particle Background */}
@@ -91,13 +112,19 @@ export default function App() {
         <main className="flex-1 p-6 overflow-y-auto hide-scrollbar">
           {activeTab === "page" && (
             <div className="space-y-6">
-              {/* Welcome Section */}
-              <div className="text-center py-8">
-                {/* <h2 className="text-3xl font-bold mb-4 gradient-text"> */}
-                {/*   Welcome to Neurix */}
-                {/* </h2> */}
-                <p className="text-[#9ca3af] text-lg">Scan the current page</p>
-              </div>
+               {/* Welcome Section */}
+               <div className="text-center py-8">
+                 {/* <h2 className="text-3xl font-bold mb-4 gradient-text"> */}
+                 {/*   Welcome to Neurix */}
+                 {/* </h2> */}
+                 <p className="text-[#9ca3af] text-lg mb-4">Scan the current page</p>
+                 <button
+                   onClick={handleScanPage}
+                   className="px-6 py-3 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+                 >
+                   Scan Page
+                 </button>
+               </div>
 
               {/* Quick Actions */}
               {/* <div className="grid grid-cols-2 gap-4"> */}

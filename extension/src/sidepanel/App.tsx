@@ -1,7 +1,6 @@
 import crxLogo from '@/assets/crx.svg'
 import reactLogo from '@/assets/react.svg'
 import viteLogo from '@/assets/vite.svg'
-import HelloWorld from '@/components/HelloWorld'
 
 export default function App() {
   return (
@@ -27,7 +26,7 @@ export default function App() {
           alt="crx logo" 
         />
       </a>
-      <HelloWorld msg="Vite + React + CRXJS" />
+
     </div>
   )
 }
