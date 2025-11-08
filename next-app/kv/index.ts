@@ -1,7 +1,7 @@
 import IORedis from "ioredis";
 
 const kvConnection = new IORedis({
-  host: "http://localhost",
+  host: "localhost",
   port: 6379,
 });
 
