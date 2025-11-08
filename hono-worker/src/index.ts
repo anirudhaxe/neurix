@@ -3,6 +3,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import initRoutes from "./routes/index.js";
+import { jobQueueWorker } from "../queue-workers/index.js";
 
 const app = new Hono();
 

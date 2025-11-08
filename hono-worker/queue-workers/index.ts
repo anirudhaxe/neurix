@@ -2,7 +2,7 @@ import { Worker } from "bullmq";
 import kvConnection from "../kv";
 
 const jobQueueWorker = new Worker(
-  "jobQueueWorker",
+  "jobQueue",
   async (job) => {
     console.log(job.data);
   },

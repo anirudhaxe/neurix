@@ -1,7 +1,9 @@
+import { jobQueue } from "@/queues";
+
 export async function POST(request: Request) {
   const data = await request.json();
 
-  console.log(data.text);
+  await jobQueue.add("sampleJobName", { textData: data.text });
 
   const response = Response.json({
     received: "ok",
