@@ -3,6 +3,12 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import initRoutes from "./routes/index.js";
+
+/*
+ * Queue workers
+ * Imported here just for initialization
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { jobQueueWorker } from "../queue-workers/index.js";
 
 const app = new Hono();
