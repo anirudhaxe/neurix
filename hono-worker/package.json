@@ -13,10 +13,14 @@
   "dependencies": {
     "@hono/node-server": "1.19.6",
     "bullmq": "5.63.0",
-    "dotenv": "17.2.3",
+    "dotenv": "16.4.5",
     "hono": "4.10.4",
     "http-status-codes": "2.3.0",
-    "ioredis": "5.8.2"
+    "ioredis": "5.8.2",
+    "@langchain/community": "1.0.0",
+    "@langchain/core": "1.0.3",
+    "@langchain/qdrant": "1.0.0",
+    "@langchain/textsplitters": "1.0.0"
   },
   "devDependencies": {
     "@eslint/js": "9.39.1",
