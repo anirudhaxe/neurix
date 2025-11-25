@@ -27,7 +27,10 @@ const jobQueueWorker = new Worker(
       // initialize embeddings model instance
       const embeddings = new OpenAIEmbeddings({
         model: "openai/text-embedding-3-small",
-        apiKey: process.env.EMBEDDING_MODEL_KEY,
+        apiKey: process.env.VERCEL_AI_GATEWAY_ROUTER_KEY,
+        configuration: {
+          baseURL: "https://ai-gateway.vercel.sh/v1",
+        },
       });
 
       // initialize the vector store and add documents
