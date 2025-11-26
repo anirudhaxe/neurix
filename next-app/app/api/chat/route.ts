@@ -5,13 +5,20 @@ import {
   tool,
   stepCountIs,
 } from "ai";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { z } from "zod";
+
+// initialize openrouter provider for ai sdk
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
 
   const result = streamText({
-    model: "openai/gpt-4o-mini",
+    // using openrouter provider
+    model: openrouter("x-ai/grok-4.1-fast:free"),
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(5),
     tools: {
