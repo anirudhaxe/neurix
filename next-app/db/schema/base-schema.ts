@@ -14,14 +14,6 @@ import {
 import type { InferSelectModel } from "drizzle-orm";
 import { user } from "./auth-schema";
 
-// sample table, will be removed later
-export const playersTable = pgTable("players", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull(),
-  age: integer().notNull(),
-  email: varchar({ length: 255 }).notNull().unique(),
-});
-
 // chat table
 export const chat = pgTable("chat", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
@@ -41,6 +33,7 @@ export const chat = pgTable("chat", {
 
 export type Chat = InferSelectModel<typeof chat>;
 
+// message table
 export const message = pgTable("message", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   chatId: uuid("chat_id")
