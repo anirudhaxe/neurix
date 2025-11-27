@@ -17,6 +17,7 @@ import { user } from "./auth-schema";
 // chat table
 export const chat = pgTable("chat", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
+  chatId: text("chat_id").notNull(),
   title: text("title").notNull(),
   userId: text("user_id").references(() => user.id),
   visibility: varchar("visibility", { enum: ["public", "private"] })
@@ -36,7 +37,7 @@ export type Chat = InferSelectModel<typeof chat>;
 // message table
 export const message = pgTable("message", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
-  chatId: uuid("chat_id")
+  chatDbId: uuid("chat_db_id")
     .notNull()
     .references(() => chat.id),
   role: varchar("role").notNull(),
