@@ -4,9 +4,11 @@ import {
   convertToModelMessages,
   tool,
   stepCountIs,
+  createIdGenerator,
 } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { z } from "zod";
+import { saveChat } from "@/lib/chat-store";
 
 // initialize openrouter provider for ai sdk
 const openrouter = createOpenRouter({
@@ -14,7 +16,8 @@ const openrouter = createOpenRouter({
 });
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  const { messages, id }: { messages: UIMessage[]; id: string } =
+    await req.json();
 
   const result = streamText({
     // using openrouter provider
@@ -52,5 +55,14 @@ export async function POST(req: Request) {
     },
   });
 
-  return result.toUIMessageStreamResponse();
+  return result.toUIMessageStreamResponse({
+    originalMessages: messages,
+    generateMessageId: createIdGenerator({
+      prefix: "msg",
+      size: 16,
+    }),
+    onFinish: ({ messages }) => {
+      saveChat({ chatId: id, messages });
+    },
+  });
 }

@@ -2,10 +2,24 @@
 
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
+import { DefaultChatTransport, UIMessage } from "ai";
 
-export default function Chat() {
+export default function Chat({
+  id,
+  initialMessages,
+}: {
+  id: string;
+  initialMessages?: UIMessage[];
+}) {
   const [input, setInput] = useState("");
-  const { messages, sendMessage } = useChat();
+  const { messages, sendMessage } = useChat({
+    id,
+    messages: initialMessages,
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+    }),
+  });
+
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
       {messages.map((message) => (
