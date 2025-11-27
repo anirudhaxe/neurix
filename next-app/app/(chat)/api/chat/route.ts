@@ -8,7 +8,7 @@ import {
 } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { z } from "zod";
-import { saveChat } from "@/lib/chat-store";
+import { loadChat, saveChat } from "@/lib/chat-store";
 
 // initialize openrouter provider for ai sdk
 const openrouter = createOpenRouter({
@@ -16,8 +16,12 @@ const openrouter = createOpenRouter({
 });
 
 export async function POST(req: Request) {
-  const { messages, id }: { messages: UIMessage[]; id: string } =
-    await req.json();
+  const { message, id }: { message: UIMessage; id: string } = await req.json();
+
+  const previousMessages = await loadChat(id);
+
+  // append latest message to previous messages
+  const messages = [...previousMessages, message];
 
   const result = streamText({
     // using openrouter provider

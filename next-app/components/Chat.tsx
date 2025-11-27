@@ -11,12 +11,19 @@ export default function Chat({
   id: string;
   initialMessages?: UIMessage[];
 }) {
+  // input text box state of chat
   const [input, setInput] = useState("");
+
+  // main state of chat messages
   const { messages, sendMessage } = useChat({
     id,
     messages: initialMessages,
     transport: new DefaultChatTransport({
       api: "/api/chat",
+      prepareSendMessagesRequest({ messages, id }) {
+        // send only the last/latest message to the backend
+        return { body: { message: messages[messages.length - 1], id } };
+      },
     }),
   });
 
