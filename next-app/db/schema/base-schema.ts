@@ -1,5 +1,5 @@
 import {
-  integer,
+  // integer,
   pgTable,
   // boolean,
   // foreignKey,
