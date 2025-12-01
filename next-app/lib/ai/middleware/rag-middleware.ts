@@ -4,8 +4,6 @@ import vectorStore from "@/lib/ai/vector-store";
 
 export const conditionalRagMiddleware: LanguageModelV2Middleware = {
   transformParams: async ({ params }) => {
-    console.log(params);
-
     // return if error connecting to vector store
     if (!vectorStore) return params;
 
