@@ -1,6 +1,6 @@
 import { UIMessage, createIdGenerator } from "ai";
 import { loadChat, saveChat } from "@/lib/chat-store";
-import llmCall from "@/lib/ai/llm";
+import { llmCall } from "@/lib/ai/llm";
 import { weatherTool, convertFahrenheitToCelsiusTool } from "@/lib/ai/tools";
 
 export async function POST(req: Request) {
