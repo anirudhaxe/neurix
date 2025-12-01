@@ -1,19 +1,7 @@
-import {
-  streamText,
-  UIMessage,
-  convertToModelMessages,
-  tool,
-  stepCountIs,
-  createIdGenerator,
-} from "ai";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { z } from "zod";
+import { UIMessage, createIdGenerator } from "ai";
 import { loadChat, saveChat } from "@/lib/chat-store";
-
-// initialize openrouter provider for ai sdk
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
+import llmCall from "@/lib/ai/llm";
+import { weatherTool, convertFahrenheitToCelsiusTool } from "@/lib/ai/tools";
 
 export async function POST(req: Request) {
   const { message, id }: { message: UIMessage; id: string } = await req.json();
@@ -23,39 +11,13 @@ export async function POST(req: Request) {
   // append latest message to previous messages
   const messages = [...previousMessages, message];
 
-  const result = streamText({
-    // using openrouter provider
-    model: openrouter("x-ai/grok-4.1-fast:free"),
-    messages: convertToModelMessages(messages),
-    stopWhen: stepCountIs(5),
+  const result = await llmCall({
+    model: "x-ai/grok-4.1-fast:free",
+    messages,
+    stopWhen: 5,
     tools: {
-      weather: tool({
-        description: "Get the weather in a location (fahrenheit)",
-        inputSchema: z.object({
-          location: z.string().describe("The location to get the weather for"),
-        }),
-        execute: async ({ location }) => {
-          const temperature = Math.round(Math.random() * (90 - 32) + 32);
-          return {
-            location,
-            temperature,
-          };
-        },
-      }),
-      convertFahrenheitToCelsius: tool({
-        description: "Convert a temperature in fahrenheit to celsius",
-        inputSchema: z.object({
-          temperature: z
-            .number()
-            .describe("The temperature in fahrenheit to convert"),
-        }),
-        execute: async ({ temperature }) => {
-          const celsius = Math.round((temperature - 32) * (5 / 9));
-          return {
-            celsius,
-          };
-        },
-      }),
+      weather: weatherTool(),
+      convertFahrenheitToCelsius: convertFahrenheitToCelsiusTool(),
     },
   });
 
