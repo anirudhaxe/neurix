@@ -19,6 +19,7 @@ export async function POST(req: Request) {
       weather: weatherTool(),
       convertFahrenheitToCelsius: convertFahrenheitToCelsiusTool(),
     },
+    isRagCall: true,
   });
 
   return result.toUIMessageStreamResponse({

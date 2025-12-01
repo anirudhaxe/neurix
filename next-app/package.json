@@ -12,6 +12,7 @@
     "auth:gen-schema": "npx @better-auth/cli generate --config ./lib/auth.ts"
   },
   "dependencies": {
+    "@ai-sdk/provider": "^2.0.0",
     "@ai-sdk/react": "2.0.102",
     "@langchain/openai": "^1.1.3",
     "@langchain/qdrant": "^1.0.1",
