@@ -59,10 +59,16 @@ async function classiferCall({ prompt }: { prompt: string }) {
 
 // generate text call function. Generates text without streaming. Meant for quick secondary generations
 // using ai gateway for inference
-async function generateTextCall({ prompt }: { prompt: string }) {
+async function generateTextCall({
+  system,
+  prompt,
+}: {
+  system: string;
+  prompt: string;
+}) {
   return generateText({
     model: "openai/gpt-4o-mini",
-    system: "Answer the users question:",
+    system,
     prompt,
   });
 }

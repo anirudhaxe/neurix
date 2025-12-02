@@ -1,9 +1,13 @@
 import db from "@/db";
 import { job } from "@/db/schema";
+import { generateTextCall } from "@/lib/ai/llm";
 import { jobQueue } from "@/queues";
 
 export async function POST(request: Request) {
   try {
+    // pass userId dynamically once auth is implemented
+    const userId = "TEMPID9090";
+
     // Validate request body
     const data = await request.json();
 
@@ -17,37 +21,61 @@ export async function POST(request: Request) {
       );
     }
 
-    // Add job to queue
-    await jobQueue.add("sampleJobName", { textData: data.text });
+    // Truncate text for title generation
+    const truncatedText =
+      data.text.length > 3000 ? data.text.substring(0, 3000) : data.text;
+
+    let generatedTitle;
+    await generateTextCall({
+      system:
+        "Create a brief, descriptive title (3-6 words, should be plain string) for sidebar display based on this raw text extracted from a web source:",
+      prompt: truncatedText,
+    })
+      .then((result) => (generatedTitle = result.text))
+      .catch((error) =>
+        console.error(
+          "Error while generating name(title) for text content:",
+          error,
+        ),
+      );
 
     // Insert job record into database
     const result = await db
       .insert(job)
       .values({
-        // pass userId dynamically once auth is implemented
-        userId: "TEMPID9090",
-        name: "Sample name",
+        userId,
+        // TODO: create a random placeholder title here
+        name: generatedTitle || "PLACEHOLDER TITLE",
         status: "QUEUED",
         type: "TEXT",
       })
-      .returning({ id: job.id });
+      .returning({ jobId: job.id });
 
-    if (result[0]?.id) {
-      const response = Response.json({
-        success: true,
-        jobId: result[0].id,
-        message: "Job created successfully",
-      });
+    const jobId = result[0]?.jobId;
 
-      // Set CORS headers (origin, methods, headers)
-      response.headers.set("Access-Control-Allow-Origin", "*");
-      response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-      response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-
-      return response;
-    } else {
+    if (!jobId)
       return Response.json({ error: "Failed to create job" }, { status: 500 });
-    }
+
+    // Add job to queue
+    await jobQueue.add(jobId, {
+      userId,
+      jobId,
+      jobName: generatedTitle,
+      textData: data.text,
+    });
+
+    const response = Response.json({
+      success: true,
+      jobId: result[0].jobId,
+      message: "Job created successfully",
+    });
+
+    // Set CORS headers (origin, methods, headers)
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+
+    return response;
   } catch (error) {
     console.error("Error in POST /api/extensions/browser:", error);
 

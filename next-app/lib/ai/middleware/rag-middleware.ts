@@ -38,6 +38,7 @@ export const conditionalRagMiddleware: LanguageModelV2Middleware = {
     // generate a hypothetical answer -> run similarity search -> prepare final call
 
     const { text: hypotheticalAnswer } = await generateTextCall({
+      system: "Answer the users question:",
       prompt: lastUserMessageContent,
     });
 

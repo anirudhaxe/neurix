@@ -4,6 +4,7 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { Document } from "langchain";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import crypto from "crypto";
 
 const jobQueueWorker = new Worker(
   "jobQueue",
@@ -15,14 +16,33 @@ const jobQueueWorker = new Worker(
         chunkOverlap: 200, // 200 characters overlap between the chunks. The overlap helps mitigate the possibility of separating a statement from important context related to it.
       });
 
-      const splittedtext = await textSplitter.splitText(job.data.textData);
+      // TODO: add code organization and logging here
+      const { userId, jobId, jobName, textData } = job.data;
+      const splittedtext = await textSplitter.splitText(textData);
 
-      // create langchain documents from splited text
-      const documents = splittedtext.map(
-        (text) => new Document({ pageContent: text }),
-      );
+      const documents = [];
+      const ids = [];
 
-      console.log("CREATED DOCUMENTS LENGTH: ", documents.length);
+      for (const chunk of splittedtext) {
+        // Deterministic ID = jobId + hash(chunkText)
+        const hash = crypto
+          .createHash("md5")
+          .update(jobId + chunk)
+          .digest("hex");
+
+        ids.push(hash);
+
+        documents.push(
+          new Document({
+            pageContent: chunk,
+            metadata: {
+              userId,
+              jobId,
+              jobName,
+            },
+          }),
+        );
+      }
 
       // initialize embeddings model instance
       const embeddings = new OpenAIEmbeddings({
@@ -42,7 +62,7 @@ const jobQueueWorker = new Worker(
         },
       );
 
-      await vectorStore.addDocuments(documents);
+      await vectorStore.addDocuments(documents, { ids });
 
       console.info(
         "INFO: DOCUMENT ADDED TO VECTOR STORE, SEMANTIC SEARCH ENGINE READY",
