@@ -2,6 +2,7 @@ import db from "@/db";
 import { job } from "@/db/schema";
 import { generateTextCall } from "@/lib/ai/llm";
 import { jobQueue } from "@/queues";
+import { handleApiError } from "@/lib/utils";
 
 export async function POST(request: Request) {
   try {
@@ -77,21 +78,7 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error("Error in POST /api/extensions/browser:", error);
-
-    // Generic error response
-    return Response.json(
-      {
-        error: "Internal server error",
-        message:
-          process.env.NODE_ENV === "development"
-            ? error instanceof Error
-              ? error.message
-              : String(error)
-            : "Something went wrong",
-      },
-      { status: 500 },
-    );
+    return handleApiError(error, "POST /api/extensions/browser");
   }
 }
 
