@@ -19,11 +19,11 @@ import { user } from "./auth-schema";
 export const jobType = pgEnum("job_type", ["TEXT"]);
 // these job status define the lifecycle of a job
 export const jobStatus = pgEnum("job_status", [
-  "QUEUED",
-  "CANCELLED",
-  "PROCESSING",
-  "ERROR",
-  "PROCESSED",
+  "QUEUED", // default status when a new job is created in the job table
+  "CANCELLED", // job is cancelled by the worker/next-app-server due to some validation issue with the job
+  "PROCESSING", // processing is started in the worker
+  "ERROR", // if an error occurs while processing the job in worker
+  "PROCESSED", // job successfully processed in worker
 ]);
 // job table
 export const job = pgTable("job", {
