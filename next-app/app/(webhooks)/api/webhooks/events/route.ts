@@ -1,12 +1,21 @@
 import { webhookEventSchema } from "@/app/(webhooks)/webhooks-config";
 import { updateJobStatus } from "@/db/job";
 import { handleApiError } from "@/lib/utils";
+import {
+  verifyWebhookSignature,
+  extractWebhookData,
+} from "@/lib/webhook/verification";
 
 export async function POST(request: Request) {
   try {
-    const payload = await request.json();
+    const { payload, signature } = await extractWebhookData(request);
 
-    // TODO: add x-signature verification
+    // Verify webhook signature
+    const verification = verifyWebhookSignature(payload, signature);
+    if (!verification.isValid) {
+      return Response.json({ error: verification.error }, { status: 401 });
+    }
+
     const { success, data } = webhookEventSchema.safeParse(payload);
 
     if (!success) {

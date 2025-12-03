@@ -4,12 +4,23 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { Document } from "langchain";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { createWebhookPayload } from "../src/utils/webhook";
+import { sendWebhookEvent } from "../src/utils/webhook-client";
 import crypto from "crypto";
 
 const jobQueueWorker = new Worker(
   "jobQueue",
   async (job) => {
+    const { userId, jobId, jobName, textData } = job.data;
     try {
+      // Send webhook event for status change to PROCESSING
+      await sendWebhookEvent(
+        createWebhookPayload("job.status.changed", {
+          jobId,
+          status: "PROCESSING",
+        }),
+      );
+
       // This splitter will recursively split the document using common separators like new lines until each chunk is of appropriate size.
       const textSplitter = new RecursiveCharacterTextSplitter({
         chunkSize: 1000, // split in chunks of 1000 characters
@@ -17,7 +28,6 @@ const jobQueueWorker = new Worker(
       });
 
       // TODO: add code organization and logging here
-      const { userId, jobId, jobName, textData } = job.data;
       const splittedtext = await textSplitter.splitText(textData);
 
       const documents = [];
@@ -67,8 +77,22 @@ const jobQueueWorker = new Worker(
       console.info(
         "INFO: DOCUMENT ADDED TO VECTOR STORE, SEMANTIC SEARCH ENGINE READY",
       );
+      // Send webhook event for status change to PROCESSED
+      await sendWebhookEvent(
+        createWebhookPayload("job.status.changed", {
+          jobId,
+          status: "PROCESSED",
+        }),
+      );
     } catch (error) {
       console.error("ERROR: WHILE STORING VECTORS: ", error);
+      // Send webhook event for status change to ERROR
+      await sendWebhookEvent(
+        createWebhookPayload("job.status.changed", {
+          jobId,
+          status: "ERROR",
+        }),
+      );
     }
   },
   {
