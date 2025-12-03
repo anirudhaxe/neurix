@@ -20,15 +20,19 @@ const openrouter = createOpenRouter({
 async function llmCall({
   model,
   messages,
+  userId,
+  jobId,
   stopWhen,
   tools,
   isRagCall = false,
 }: {
   model: string;
   messages: UIMessage[];
+  userId: string;
+  jobId?: string;
   stopWhen: number;
   tools?: Record<string, any>;
-  isRagCall?: Boolean;
+  isRagCall?: boolean;
 }) {
   return streamText({
     // if RAG call, use RAG middleware
@@ -38,6 +42,12 @@ async function llmCall({
           middleware: conditionalRagMiddleware,
         })
       : openrouter(model),
+    providerOptions: {
+      conditionalRagMiddleware: {
+        userId: userId,
+        jobId: jobId || "",
+      },
+    },
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(stopWhen),
     tools,

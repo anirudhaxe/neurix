@@ -14,6 +14,8 @@ export async function POST(req: Request) {
   const result = await llmCall({
     model: "x-ai/grok-4.1-fast:free",
     messages,
+    // TODO: pass this id dynamically once auth is implemented
+    userId: "TEMPID9090",
     stopWhen: 5,
     tools: {
       weather: weatherTool(),

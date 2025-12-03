@@ -7,7 +7,12 @@ export const conditionalRagMiddleware: LanguageModelV2Middleware = {
     // return if error connecting to vector store
     if (!vectorStore) return params;
 
-    const { prompt: messages } = params;
+    const { prompt: messages, providerOptions } = params;
+
+    // return if providerOptions not provided (atleast userId is mandatory)
+    if (!providerOptions) return params;
+
+    const { userId, jobId } = providerOptions.conditionalRagMiddleware;
 
     const recentMessage = messages.pop();
 
@@ -42,10 +47,23 @@ export const conditionalRagMiddleware: LanguageModelV2Middleware = {
       prompt: lastUserMessageContent,
     });
 
+    const vectorQueryFilter = {
+      must: [
+        {
+          key: "userId",
+          match: {
+            value: userId,
+          },
+        },
+        ...(jobId ? [{ key: "jobId", match: { value: jobId } }] : []), // optional jobId filter
+      ],
+    };
+
     // searches for documents similar to a text query by embedding the query and performing a similarity search on the resulting vector and take the top K results
     const documentChunksWithSimilarity = await vectorStore.similaritySearch(
       hypotheticalAnswer,
       3,
+      vectorQueryFilter,
     );
 
     // add the chunks to the last user message
