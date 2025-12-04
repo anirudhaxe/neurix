@@ -20,21 +20,28 @@ export default function ParticleBackground() {
     if (!ctx) return
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      // For popup, use parent element dimensions or fallback to window
+      const parent = canvas.parentElement
+      const width = parent?.clientWidth || window.innerWidth
+      const height = parent?.clientHeight || window.innerHeight
+      
+      canvas.width = width
+      canvas.height = height
+      
+      return { width, height }
     }
 
-    resizeCanvas()
+    const { width, height } = resizeCanvas()
     window.addEventListener('resize', resizeCanvas)
 
-    // Create particles
+    // Create particles - ensure they're distributed across the entire canvas immediately
     const particles: Particle[] = []
     const particleCount = 50
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * width,
+        y: Math.random() * height,
         size: Math.random() * 2 + 0.5,
         speedX: (Math.random() - 0.5) * 0.5,
         speedY: (Math.random() - 0.5) * 0.5,
@@ -87,6 +94,7 @@ export default function ParticleBackground() {
       animationId = requestAnimationFrame(animate)
     }
 
+    // Start animation immediately
     animate()
 
     return () => {
@@ -100,7 +108,7 @@ export default function ParticleBackground() {
       ref={canvasRef}
       className="particle-bg"
       style={{
-        position: 'fixed',
+        position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',

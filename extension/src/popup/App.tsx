@@ -45,15 +45,12 @@ export default function App() {
   const isActionDisabled = !selectedAsset || isScanning;
 
   return (
-    <div className="relative min-h-screen bg-[#0C1232] text-white overflow-hidden">
+    <div className="relative bg-[#0C1232] text-white overflow-hidden" style={{ minHeight: "600px", width: "400px" }}>
       {/* Particle Background */}
       <ParticleBackground />
 
       {/* Main Content */}
-      <div
-        className="relative z-10 flex flex-col h-screen"
-        style={{ minHeight: "600px", width: "400px" }}
-      >
+      <div className="relative z-10 flex flex-col h-screen">
         {/* Row 1: Header */}
         <Header onProfileClick={handleProfileClick} />
 
