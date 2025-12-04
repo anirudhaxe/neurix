@@ -42,17 +42,17 @@ export default function App() {
         style={{ minHeight: "600px", width: "400px" }}
       >
         {/* Row 1: Header */}
-        <header className="p-4 border-b border-[rgba(33,150,243,0.2)]">
+        <header className="p-3 border-b border-[rgba(33,150,243,0.2)]">
           <div className="flex items-center justify-between">
             {/* Logo on top left */}
             <div className="flex items-center">
-              <img src="/dark-logo.png" alt="Neurix" className="h-8 w-auto" />
+              <img src="/dark-logo.png" alt="Neurix" className="h-7 w-auto" />
             </div>
 
             {/* Profile icon on top right */}
-            <button className="p-2 rounded-lg hover:bg-[rgba(33,150,243,0.1)] transition-colors">
+            <button className="p-1.5 rounded-lg hover:bg-[rgba(33,150,243,0.1)] transition-colors">
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -69,28 +69,28 @@ export default function App() {
         </header>
 
         {/* Row 2: Source Section */}
-        <div className="p-4 border-b border-[rgba(33,150,243,0.2)]">
-          <h3 className="text-sm font-medium text-[#9ca3af] mb-3">Source</h3>
+        <div className="p-3 border-b border-[rgba(33,150,243,0.2)]">
+          <h3 className="text-xs font-medium text-[#9ca3af] mb-2">Source</h3>
           <div className="flex items-center justify-center">
-            <div className="relative flex items-center bg-[rgba(33,150,243,0.1)] rounded-full p-1">
+            <div className="relative flex items-center bg-[rgba(33,150,243,0.1)] rounded-full p-0.5">
               {/* Sliding indicator */}
               <div
-                className={`absolute top-1 bottom-1 w-1/2 bg-gradient-to-r from-[#2196F3] to-[#1976D2] rounded-full transition-all duration-300 ease-out ${
-                  sourceType === "web" ? "left-1" : "left-1/2"
+                className={`absolute top-0.5 bottom-0.5 w-1/2 bg-gradient-to-r from-[#2196F3] to-[#1976D2] rounded-full transition-all duration-300 ease-out ${
+                  sourceType === "web" ? "left-0.5" : "left-1/2"
                 }`}
               />
 
               {/* Web Option */}
               <button
                 onClick={() => setSourceType("web")}
-                className={`relative z-10 flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                className={`relative z-10 flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 ${
                   sourceType === "web"
                     ? "text-white"
                     : "text-[#9ca3af] hover:text-white"
                 }`}
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-3.5 h-3.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -108,14 +108,14 @@ export default function App() {
               {/* Document Option */}
               <button
                 onClick={() => setSourceType("document")}
-                className={`relative z-10 flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                className={`relative z-10 flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 ${
                   sourceType === "document"
                     ? "text-white"
                     : "text-[#9ca3af] hover:text-white"
                 }`}
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-3.5 h-3.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -134,20 +134,20 @@ export default function App() {
         </div>
 
         {/* Row 3: Asset Selection */}
-        <div className="p-4 border-b border-[rgba(33,150,243,0.2)]">
-          <div className="flex justify-center space-x-4">
+        <div className="p-3 border-b border-[rgba(33,150,243,0.2)]">
+          <div className="flex justify-center space-x-3">
             {/* TXT Asset */}
             <button
               onClick={() => setSelectedAsset("txt")}
-              className={`p-6 rounded-lg border-2 transition-all ${
+              className={`p-4 rounded-lg border-2 transition-all ${
                 selectedAsset === "txt"
                   ? "border-[#2196F3] bg-[rgba(33,150,243,0.1)]"
                   : "border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]"
               }`}
             >
-              <div className="w-10 h-10 flex items-center justify-center">
+              <div className="w-8 h-8 flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 text-[#2196F3]"
+                  className="w-5 h-5 text-[#2196F3]"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -160,15 +160,15 @@ export default function App() {
             {/* Video Asset */}
             <button
               onClick={() => setSelectedAsset("video")}
-              className={`p-6 rounded-lg border-2 transition-all ${
+              className={`p-4 rounded-lg border-2 transition-all ${
                 selectedAsset === "video"
                   ? "border-[#2196F3] bg-[rgba(33,150,243,0.1)]"
                   : "border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]"
               }`}
             >
-              <div className="w-10 h-10 flex items-center justify-center">
+              <div className="w-8 h-8 flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 text-[#1976D2]"
+                  className="w-5 h-5 text-[#1976D2]"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -181,15 +181,15 @@ export default function App() {
             {/* Document Asset */}
             <button
               onClick={() => setSelectedAsset("doc")}
-              className={`p-6 rounded-lg border-2 transition-all ${
+              className={`p-4 rounded-lg border-2 transition-all ${
                 selectedAsset === "doc"
                   ? "border-[#2196F3] bg-[rgba(33,150,243,0.1)]"
                   : "border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]"
               }`}
             >
-              <div className="w-10 h-10 flex items-center justify-center">
+              <div className="w-8 h-8 flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 text-[#1565C0]"
+                  className="w-5 h-5 text-[#1565C0]"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -202,18 +202,18 @@ export default function App() {
         </div>
 
         {/* Row 4: Main Action Buttons */}
-        <div className="flex-1 p-4 flex items-end">
-          <div className="flex w-full space-x-3">
+        <div className="flex-1 p-3 flex items-end">
+          <div className="flex w-full space-x-2">
             {/* Contextualize Button - 3/4 width */}
             <button
               onClick={handleScanPage}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-[#2196F3] via-[#1976D2] to-[#1565C0] text-white rounded-lg font-medium shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:scale-[1.02] transition-all duration-200 border border-blue-400/20"
+              className="flex-1 px-4 py-2 bg-gradient-to-r from-[#2196F3] via-[#1976D2] to-[#1565C0] text-white rounded-lg font-medium shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:scale-[1.02] transition-all duration-200 border border-blue-400/20 text-sm"
             >
               + Contextualize
             </button>
 
             {/* Collection Button - 1/4 width */}
-            <button className="w-16 h-12 bg-[rgba(33,150,243,0.1)] border border-[rgba(33,150,243,0.3)] rounded-lg hover:bg-[rgba(33,150,243,0.2)] transition-colors flex items-center justify-center">
+            <button className="w-14 h-10 bg-[rgba(33,150,243,0.1)] border border-[rgba(33,150,243,0.3)] rounded-lg hover:bg-[rgba(33,150,243,0.2)] transition-colors flex items-center justify-center">
               <svg
                 className="w-5 h-5 text-[#9ca3af]"
                 fill="none"
