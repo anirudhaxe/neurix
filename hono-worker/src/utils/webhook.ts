@@ -9,7 +9,10 @@ export interface WebhookPayload {
 }
 
 export function generateWebhookSignature(payload: WebhookPayload): string {
-  const webhookSecret = process.env.WEBHOOK_SECRET || "default-secret";
+  if (!process.env.WEBHOOK_SECRET) {
+    throw new Error("WEBHOOK_SECRET environment variable is not set");
+  }
+  const webhookSecret = process.env.WEBHOOK_SECRET;
   return crypto
     .createHmac("sha256", webhookSecret)
     .update(JSON.stringify(payload))

@@ -13,7 +13,10 @@ export function verifyWebhookSignature(
     return { isValid: false, error: "Invalid webhook signature" };
   }
 
-  const webhookSecret = process.env.WEBHOOK_SECRET || "default-secret";
+  if (!process.env.WEBHOOK_SECRET) {
+    throw new Error("WEBHOOK_SECRET environment variable is not set");
+  }
+  const webhookSecret = process.env.WEBHOOK_SECRET;
   const expectedSignature = crypto
     .createHmac("sha256", webhookSecret)
     .update(JSON.stringify(payload))
