@@ -207,7 +207,7 @@ export default function App() {
             {/* Contextualize Button - 3/4 width */}
             <button
               onClick={handleScanPage}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-[#2196F3] to-[#1976D2] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-[#2196F3] via-[#1976D2] to-[#1565C0] text-white rounded-lg font-medium shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:scale-[1.02] transition-all duration-200 border border-blue-400/20"
             >
               + Contextualize
             </button>
