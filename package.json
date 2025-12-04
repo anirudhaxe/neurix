@@ -10,13 +10,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anirudhaxe/neurix.git"
+    "url": "git+https://github.com/anirudhaxe/opencontext.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/anirudhaxe/neurix/issues"
+    "url": "https://github.com/anirudhaxe/opencontext/issues"
   },
-  "homepage": "https://github.com/anirudhaxe/neurix#readme"
+  "homepage": "https://github.com/anirudhaxe/opencontext#readme"
 }
