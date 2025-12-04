@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ParticleBackground from "@/components/ParticleBackground";
+import GeometricPatternBackground from "@/components/GeometricPatternBackground";
 import Header from "./components/Header";
 import SourceToggle from "./components/SourceToggle";
 import AssetSelector from "./components/AssetSelector";
@@ -11,19 +11,19 @@ export default function App() {
   const [sourceType, setSourceType] = useState<SourceType>("web");
   const [selectedAsset, setSelectedAsset] = useState<AssetType>(null);
   const [isScanning, setIsScanning] = useState(false);
-  
+
   const { scanCurrentPage, sendMessageToBackground } = useChromeAPI();
 
   const handleScanPage = async () => {
     if (isScanning) return;
-    
+
     setIsScanning(true);
     try {
       const result = await scanCurrentPage();
-      await sendMessageToBackground({ 
-        action: "scanPage", 
+      await sendMessageToBackground({
+        action: "scanPage",
         text: result.text,
-        tab: result.tab
+        tab: result.tab,
       });
     } catch (error) {
       console.error("Error scanning page:", error);
@@ -45,9 +45,18 @@ export default function App() {
   const isActionDisabled = !selectedAsset || isScanning;
 
   return (
-    <div className="relative bg-[#0C1232] text-white overflow-hidden" style={{ minHeight: "600px", width: "400px" }}>
+    <div
+      className="relative bg-[#0C1232] text-white overflow-hidden"
+      style={{ minHeight: "600px", width: "400px" }}
+    >
       {/* Particle Background */}
-      <ParticleBackground />
+      {/* <ParticleBackground /> */}
+
+      {/* Aurora/Northern Lights Effect */}
+      {/* <AuroraBackground /> */}
+
+      {/* Geometric Pattern */}
+      <GeometricPatternBackground />
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col h-screen">
