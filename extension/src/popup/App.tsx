@@ -4,12 +4,17 @@ import ParticleBackground from "@/components/ParticleBackground";
 export default function App() {
   const [webSource, setWebSource] = useState(true);
   const [documentSource, setDocumentSource] = useState(false);
-  const [selectedAsset, setSelectedAsset] = useState<"txt" | "video" | "doc" | null>(null);
+  const [selectedAsset, setSelectedAsset] = useState<
+    "txt" | "video" | "doc" | null
+  >(null);
 
   const handleScanPage = async () => {
     try {
       // Get active tab
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
       if (!tab.id) return;
 
       // Execute script to extract text
@@ -21,9 +26,9 @@ export default function App() {
       const text = results[0].result;
 
       // Send to background
-      chrome.runtime.sendMessage({ action: 'scanPage', text });
+      chrome.runtime.sendMessage({ action: "scanPage", text });
     } catch (error) {
-      console.error('Error scanning page:', error);
+      console.error("Error scanning page:", error);
     }
   };
 
@@ -42,13 +47,9 @@ export default function App() {
           <div className="flex items-center justify-between">
             {/* Logo on top left */}
             <div className="flex items-center">
-              <img 
-                src="/dark-logo.png" 
-                alt="Neurix" 
-                className="h-8 w-auto"
-              />
+              <img src="/dark-logo.png" alt="Neurix" className="h-8 w-auto" />
             </div>
-            
+
             {/* Profile icon on top right */}
             <button className="p-2 rounded-lg hover:bg-[rgba(255,255,255,0.05)] transition-colors">
               <svg
@@ -73,7 +74,7 @@ export default function App() {
           <h3 className="text-sm font-medium text-[#9ca3af] mb-3">Source</h3>
           <div className="flex space-x-4">
             <div className="flex items-center space-x-2">
-              <label 
+              <label
                 htmlFor="web-switch"
                 className="text-sm font-medium cursor-pointer"
               >
@@ -86,19 +87,21 @@ export default function App() {
                   if (!webSource) setDocumentSource(false);
                 }}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  webSource ? 'bg-gradient-to-r from-[#6366f1] to-[#8b5cf6]' : 'bg-[rgba(255,255,255,0.2)]'
+                  webSource
+                    ? "bg-gradient-to-r from-[#6366f1] to-[#8b5cf6]"
+                    : "bg-[rgba(255,255,255,0.2)]"
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    webSource ? 'translate-x-6' : 'translate-x-1'
+                    webSource ? "translate-x-6" : "translate-x-1"
                   }`}
                 />
               </button>
             </div>
-            
+
             <div className="flex items-center space-x-2">
-              <label 
+              <label
                 htmlFor="document-switch"
                 className="text-sm font-medium cursor-pointer"
               >
@@ -111,12 +114,14 @@ export default function App() {
                   if (!documentSource) setWebSource(false);
                 }}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  documentSource ? 'bg-gradient-to-r from-[#6366f1] to-[#8b5cf6]' : 'bg-[rgba(255,255,255,0.2)]'
+                  documentSource
+                    ? "bg-gradient-to-r from-[#6366f1] to-[#8b5cf6]"
+                    : "bg-[rgba(255,255,255,0.2)]"
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    documentSource ? 'translate-x-6' : 'translate-x-1'
+                    documentSource ? "translate-x-6" : "translate-x-1"
                   }`}
                 />
               </button>
@@ -129,11 +134,11 @@ export default function App() {
           <div className="flex justify-center space-x-4">
             {/* TXT Asset */}
             <button
-              onClick={() => setSelectedAsset('txt')}
+              onClick={() => setSelectedAsset("txt")}
               className={`p-4 rounded-lg border-2 transition-all ${
-                selectedAsset === 'txt'
-                  ? 'border-gradient-to-r from-[#6366f1] to-[#8b5cf6] bg-[rgba(99,102,241,0.1)]'
-                  : 'border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]'
+                selectedAsset === "txt"
+                  ? "border-gradient-to-r from-[#6366f1] to-[#8b5cf6] bg-[rgba(99,102,241,0.1)]"
+                  : "border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]"
               }`}
             >
               <div className="w-12 h-12 flex items-center justify-center">
@@ -150,11 +155,11 @@ export default function App() {
 
             {/* Video Asset */}
             <button
-              onClick={() => setSelectedAsset('video')}
+              onClick={() => setSelectedAsset("video")}
               className={`p-4 rounded-lg border-2 transition-all ${
-                selectedAsset === 'video'
-                  ? 'border-gradient-to-r from-[#6366f1] to-[#8b5cf6] bg-[rgba(99,102,241,0.1)]'
-                  : 'border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]'
+                selectedAsset === "video"
+                  ? "border-gradient-to-r from-[#6366f1] to-[#8b5cf6] bg-[rgba(99,102,241,0.1)]"
+                  : "border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]"
               }`}
             >
               <div className="w-12 h-12 flex items-center justify-center">
@@ -171,11 +176,11 @@ export default function App() {
 
             {/* Document Asset */}
             <button
-              onClick={() => setSelectedAsset('doc')}
+              onClick={() => setSelectedAsset("doc")}
               className={`p-4 rounded-lg border-2 transition-all ${
-                selectedAsset === 'doc'
-                  ? 'border-gradient-to-r from-[#6366f1] to-[#8b5cf6] bg-[rgba(99,102,241,0.1)]'
-                  : 'border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]'
+                selectedAsset === "doc"
+                  ? "border-gradient-to-r from-[#6366f1] to-[#8b5cf6] bg-[rgba(99,102,241,0.1)]"
+                  : "border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]"
               }`}
             >
               <div className="w-12 h-12 flex items-center justify-center">
@@ -202,7 +207,7 @@ export default function App() {
             >
               + Contextualize
             </button>
-            
+
             {/* Collection Button - 1/4 width */}
             <button className="w-16 h-12 bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.2)] rounded-lg hover:bg-[rgba(255,255,255,0.15)] transition-colors flex items-center justify-center">
               <svg
