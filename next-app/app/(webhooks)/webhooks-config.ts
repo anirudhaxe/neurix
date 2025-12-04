@@ -1,7 +1,7 @@
 import z from "zod";
 
 // providers
-const providers = ["neurix-worker"];
+const providers = ["opencontext-worker"];
 
 // event types
 const jobEventTypes = ["job.status.changed"];

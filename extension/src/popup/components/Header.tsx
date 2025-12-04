@@ -6,7 +6,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
       <div className="flex items-center justify-between">
         {/* Logo on top left */}
         <div className="flex items-center">
-          <img src="/dark-logo.png" alt="Neurix" className="h-7 w-auto" />
+          <img src="/dark-logo.png" alt="OpenContext" className="h-7 w-auto" />
         </div>
 
         {/* Profile icon on top right */}
@@ -33,3 +33,4 @@ export default function Header({ onProfileClick }: HeaderProps) {
     </header>
   );
 }
+

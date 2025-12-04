@@ -1,4 +1,4 @@
-This is the [Next.js](https://nextjs.org) application of neurix
+This is the [Next.js](https://nextjs.org) application of opencontext
 
 Run the development server:
 
