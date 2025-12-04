@@ -21,13 +21,14 @@ export function generateWebhookSignature(payload: WebhookPayload): string {
 
 export function createWebhookPayload(
   eventType: string,
-  data: Record<string, any>
+  data: Record<string, any>,
 ): WebhookPayload {
   return {
-    provider: "neurix-worker",
+    provider: "opencontext-worker",
     eventId: randomUUID(),
     eventType,
     timestamp: new Date().toISOString(),
     data,
   };
 }
+

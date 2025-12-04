@@ -1,4 +1,4 @@
-# Neurix - Browser Extension
+# OpenContext - Browser Extension
 
 Built with React, TypeScript, and Vite
 
