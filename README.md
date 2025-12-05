@@ -3,7 +3,7 @@
     <picture>
       <source srcset="extension/public/dark-logo.png" media="(prefers-color-scheme: dark)">
       <source srcset="extension/public/light-logo.png" media="(prefers-color-scheme: light)">
-      <img src="extension/public/light-logo.png" alt="OpenContext logo">
+      <img src="extension/public/light-logo.png" alt="OpenContext logo" width="400">
     </picture>
   </a>
 </p>
