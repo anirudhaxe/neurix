@@ -11,6 +11,7 @@ export interface SourceToggleProps {
 }
 
 export interface AssetSelectorProps {
+  sourceType: SourceType;
   selectedAsset: AssetType;
   onAssetSelect: (asset: AssetType) => void;
 }
@@ -31,3 +32,4 @@ export interface ScanPageResult {
   text: string;
   tab: ChromeTab;
 }
+

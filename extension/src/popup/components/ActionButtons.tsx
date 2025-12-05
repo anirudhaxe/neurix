@@ -12,7 +12,7 @@ export default function ActionButtons({
         <button
           onClick={onContextualize}
           disabled={disabled}
-          className="flex-1 px-4 py-2 bg-gradient-to-r from-[#2196F3] via-[#1976D2] to-[#1565C0] text-white rounded-lg font-medium shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:scale-[1.02] transition-all duration-200 border border-blue-400/20 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-lg"
+          className="flex-1 px-4 py-2 bg-gradient-to-r from-[#4DB5CF] via-[#3da3bd] to-[#2d9ab1] text-white rounded-lg font-medium shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 hover:scale-[1.02] transition-all duration-200 border border-cyan-400/20 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-lg"
         >
           + Contextualize
         </button>
@@ -21,11 +21,12 @@ export default function ActionButtons({
         <button
           onClick={onCollection}
           disabled={disabled}
-          className="w-14 h-10 bg-[rgba(33,150,243,0.1)] border border-[rgba(33,150,243,0.3)] rounded-lg hover:bg-[rgba(33,150,243,0.2)] transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[rgba(33,150,243,0.1)]"
+          className="w-14 h-10 bg-[rgba(77,181,207,0.1)] border border-[rgba(77,181,207,0.3)] rounded-lg hover:bg-[rgba(77,181,207,0.2)] transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[rgba(77,181,207,0.1)]"
           aria-label="Collection"
+          style={{ overflow: "visible", padding: "8px" }}
         >
           <svg
-            className="w-5 h-5 text-[#9ca3af]"
+            className="w-4 h-4 text-[#4DB5CF]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

@@ -3,6 +3,7 @@ import GeometricPatternBackground from "@/components/GeometricPatternBackground"
 import Header from "./components/Header";
 import SourceToggle from "./components/SourceToggle";
 import AssetSelector from "./components/AssetSelector";
+import UrlPreview from "./components/UrlPreview";
 import ActionButtons from "./components/ActionButtons";
 import { useChromeAPI } from "./hooks/useChromeAPI";
 import type { SourceType, AssetType } from "./types";
@@ -46,7 +47,7 @@ export default function App() {
 
   return (
     <div
-      className="relative bg-[#0C1232] text-white overflow-hidden"
+      className="relative bg-[#0a1929] text-white overflow-hidden"
       style={{ minHeight: "600px", width: "400px" }}
     >
       {/* Particle Background */}
@@ -71,11 +72,15 @@ export default function App() {
 
         {/* Row 3: Asset Selection */}
         <AssetSelector
+          sourceType={sourceType}
           selectedAsset={selectedAsset}
           onAssetSelect={setSelectedAsset}
         />
 
-        {/* Row 4: Main Action Buttons */}
+        {/* Row 4: URL Preview */}
+        <UrlPreview />
+
+        {/* Row 5: Main Action Buttons */}
         <ActionButtons
           onContextualize={handleScanPage}
           onCollection={handleCollection}

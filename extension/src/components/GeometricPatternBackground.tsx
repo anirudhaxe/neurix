@@ -28,14 +28,14 @@ export default function GeometricPatternBackground() {
       const { width, height } = canvas
       
       // Clear canvas
-      ctx.fillStyle = '#0C1232'
+      ctx.fillStyle = '#0a1929'
       ctx.fillRect(0, 0, width, height)
 
       // Draw geometric pattern
       const gridSize = 40
       const lineWidth = 0.5
       
-      ctx.strokeStyle = 'rgba(99, 102, 241, 0.1)'
+      ctx.strokeStyle = 'rgba(77, 181, 207, 0.1)'
       ctx.lineWidth = lineWidth
 
       // Draw grid with subtle animation
@@ -46,9 +46,9 @@ export default function GeometricPatternBackground() {
         
         // Add subtle glow effect
         if (Math.sin(time * 0.001 + x * 0.01) > 0.5) {
-          ctx.strokeStyle = 'rgba(99, 102, 241, 0.2)'
+          ctx.strokeStyle = 'rgba(77, 181, 207, 0.2)'
         } else {
-          ctx.strokeStyle = 'rgba(99, 102, 241, 0.05)'
+          ctx.strokeStyle = 'rgba(77, 181, 207, 0.05)'
         }
         
         ctx.stroke()
@@ -61,16 +61,16 @@ export default function GeometricPatternBackground() {
         
         // Add subtle glow effect
         if (Math.sin(time * 0.001 + y * 0.01) > 0.5) {
-          ctx.strokeStyle = 'rgba(139, 92, 246, 0.15)'
+          ctx.strokeStyle = 'rgba(77, 181, 207, 0.15)'
         } else {
-          ctx.strokeStyle = 'rgba(139, 92, 246, 0.03)'
+          ctx.strokeStyle = 'rgba(77, 181, 207, 0.03)'
         }
         
         ctx.stroke()
       }
 
       // Draw diagonal lines for more complexity
-      ctx.strokeStyle = 'rgba(33, 150, 243, 0.03)'
+      ctx.strokeStyle = 'rgba(77, 181, 207, 0.03)'
       ctx.lineWidth = lineWidth * 0.5
 
       for (let i = -height; i < width; i += gridSize * 2) {
