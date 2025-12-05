@@ -19,7 +19,7 @@ function AssetButton({
   return (
     <button
       onClick={onClick}
-      className={`p-4 rounded-lg border-2 transition-all ${
+      className={`px-8 py-0.5 rounded-lg border-2 transition-all ${
         isSelected
           ? "border-[#4DB5CF] bg-[rgba(77,181,207,0.1)]"
           : "border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]"
@@ -28,10 +28,12 @@ function AssetButton({
       role="radio"
       name="asset-type"
     >
-      <div className="w-8 h-8 flex items-center justify-center">
-        <div className={color}>{icon}</div>
+      <div className="pt-1">
+        <div className="w-8 h-8 flex items-center justify-center">
+          <div className={color}>{icon}</div>
+        </div>
+        <p className="text-xs mt-1 text-[#9ca3af]">{label}</p>
       </div>
-      <p className="text-xs mt-1 text-[#9ca3af]">{label}</p>
     </button>
   );
 }
@@ -44,10 +46,10 @@ export default function AssetSelector({
   const assets =
     sourceType === "web"
       ? [
-{
-             type: "txt" as const,
-             label: "TXT",
-             color: "text-[#4DB5CF]",
+          {
+            type: "txt" as const,
+            label: "TXT",
+            color: "text-[#4DB5CF]",
             icon: (
               <svg
                 className="w-5 h-5"
@@ -59,10 +61,10 @@ export default function AssetSelector({
               </svg>
             ),
           },
-{
-             type: "video" as const,
-             label: "Video",
-             color: "text-[#4DB5CF]",
+          {
+            type: "video" as const,
+            label: "Video",
+            color: "text-[#4DB5CF]",
             icon: (
               <svg
                 className="w-5 h-5"
@@ -76,10 +78,10 @@ export default function AssetSelector({
           },
         ]
       : [
-{
-             type: "doc" as const,
-             label: "Doc",
-             color: "text-[#4DB5CF]",
+          {
+            type: "doc" as const,
+            label: "Doc",
+            color: "text-[#4DB5CF]",
             icon: (
               <svg
                 className="w-5 h-5"
@@ -123,4 +125,3 @@ export default function AssetSelector({
     </div>
   );
 }
-
