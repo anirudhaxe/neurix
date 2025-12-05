@@ -23,9 +23,10 @@ export default function ActionButtons({
           disabled={disabled}
           className="w-14 h-10 bg-[rgba(77,181,207,0.1)] border border-[rgba(77,181,207,0.3)] rounded-lg hover:bg-[rgba(77,181,207,0.2)] transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[rgba(77,181,207,0.1)]"
           aria-label="Collection"
+          style={{ overflow: "visible", padding: "8px" }}
         >
           <svg
-            className="w-5 h-5 text-[#9ca3af]"
+            className="w-4 h-4 text-[#4DB5CF]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

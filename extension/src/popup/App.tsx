@@ -3,6 +3,7 @@ import GeometricPatternBackground from "@/components/GeometricPatternBackground"
 import Header from "./components/Header";
 import SourceToggle from "./components/SourceToggle";
 import AssetSelector from "./components/AssetSelector";
+import UrlPreview from "./components/UrlPreview";
 import ActionButtons from "./components/ActionButtons";
 import { useChromeAPI } from "./hooks/useChromeAPI";
 import type { SourceType, AssetType } from "./types";
@@ -76,7 +77,10 @@ export default function App() {
           onAssetSelect={setSelectedAsset}
         />
 
-        {/* Row 4: Main Action Buttons */}
+        {/* Row 4: URL Preview */}
+        <UrlPreview />
+
+        {/* Row 5: Main Action Buttons */}
         <ActionButtons
           onContextualize={handleScanPage}
           onCollection={handleCollection}
