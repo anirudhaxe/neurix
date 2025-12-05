@@ -21,7 +21,7 @@ function AssetButton({
       onClick={onClick}
       className={`p-4 rounded-lg border-2 transition-all ${
         isSelected
-          ? "border-[#2196F3] bg-[rgba(33,150,243,0.1)]"
+          ? "border-[#4DB5CF] bg-[rgba(77,181,207,0.1)]"
           : "border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.3)]"
       }`}
       aria-pressed={isSelected}
@@ -44,10 +44,10 @@ export default function AssetSelector({
   const assets =
     sourceType === "web"
       ? [
-          {
-            type: "txt" as const,
-            label: "TXT",
-            color: "text-[#2196F3]",
+{
+             type: "txt" as const,
+             label: "TXT",
+             color: "text-[#4DB5CF]",
             icon: (
               <svg
                 className="w-5 h-5"
@@ -59,10 +59,10 @@ export default function AssetSelector({
               </svg>
             ),
           },
-          {
-            type: "video" as const,
-            label: "Video",
-            color: "text-[#1976D2]",
+{
+             type: "video" as const,
+             label: "Video",
+             color: "text-[#4DB5CF]",
             icon: (
               <svg
                 className="w-5 h-5"
@@ -76,10 +76,10 @@ export default function AssetSelector({
           },
         ]
       : [
-          {
-            type: "doc" as const,
-            label: "Doc",
-            color: "text-[#1565C0]",
+{
+             type: "doc" as const,
+             label: "Doc",
+             color: "text-[#4DB5CF]",
             icon: (
               <svg
                 className="w-5 h-5"
@@ -107,7 +107,7 @@ export default function AssetSelector({
   }, [sourceType]);
 
   return (
-    <div className="p-3 border-b border-[rgba(33,150,243,0.2)]">
+    <div className="p-3 border-b border-[rgba(77,181,207,0.2)]">
       <div className="flex justify-center space-x-3">
         {assets.map((asset) => (
           <AssetButton

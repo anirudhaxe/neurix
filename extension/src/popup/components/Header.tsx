@@ -2,7 +2,7 @@ import type { HeaderProps } from "../types";
 
 export default function Header({ onProfileClick }: HeaderProps) {
   return (
-    <header className="p-3 border-b border-[rgba(33,150,243,0.2)]">
+    <header className="p-3 border-b border-[rgba(77,181,207,0.2)]">
       <div className="flex items-center justify-between">
         {/* Logo on top left */}
         <div className="flex items-center">
@@ -12,7 +12,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
         {/* Profile icon on top right */}
         <button
           onClick={onProfileClick}
-          className="p-1.5 rounded-lg hover:bg-[rgba(33,150,243,0.1)] transition-colors"
+          className="p-1.5 rounded-lg hover:bg-[rgba(77,181,207,0.1)] transition-colors"
           aria-label="Profile"
         >
           <svg

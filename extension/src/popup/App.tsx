@@ -46,7 +46,7 @@ export default function App() {
 
   return (
     <div
-      className="relative bg-[#0C1232] text-white overflow-hidden"
+      className="relative bg-[#0a1929] text-white overflow-hidden"
       style={{ minHeight: "600px", width: "400px" }}
     >
       {/* Particle Background */}

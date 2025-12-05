@@ -5,13 +5,13 @@ export default function SourceToggle({
   onSourceTypeChange,
 }: SourceToggleProps) {
   return (
-    <div className="p-3 border-b border-[rgba(33,150,243,0.2)]">
+    <div className="p-3 border-b border-[rgba(77,181,207,0.2)]">
       <h3 className="text-xs font-medium text-[#9ca3af] mb-2">Source</h3>
       <div className="flex items-center justify-center">
-        <div className="relative flex items-center bg-[rgba(33,150,243,0.1)] rounded-full p-0.5">
+        <div className="relative flex items-center bg-[rgba(77,181,207,0.1)] rounded-full p-0.5">
           {/* Sliding indicator */}
           <div
-            className={`absolute top-0.5 bottom-0.5 w-1/2 bg-gradient-to-r from-[#2196F3] to-[#1976D2] rounded-full transition-all duration-300 ease-out ${
+            className={`absolute top-0.5 bottom-0.5 w-1/2 bg-gradient-to-r from-[#4DB5CF] to-[#3da3bd] rounded-full transition-all duration-300 ease-out ${
               sourceType === "web" ? "left-0.5" : "left-1/2"
             }`}
           />
