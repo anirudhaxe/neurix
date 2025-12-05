@@ -71,6 +71,7 @@ export default function App() {
 
         {/* Row 3: Asset Selection */}
         <AssetSelector
+          sourceType={sourceType}
           selectedAsset={selectedAsset}
           onAssetSelect={setSelectedAsset}
         />
