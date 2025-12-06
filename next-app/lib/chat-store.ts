@@ -1,37 +1,21 @@
-import db from "@/db";
-import { chat, message } from "@/db/schema/base-schema";
-import { generateId, UIMessage } from "ai";
-import { eq } from "drizzle-orm";
-
-export async function createChat(): Promise<string> {
-  const id = generateId();
-
-  const returnedChatIds = await db
-    .insert(chat)
-    .values({ chatId: id, title: "Random chat title" })
-    .returning({ chatId: chat.chatId });
-
-  return returnedChatIds[0].chatId;
-}
+import {
+  createChat,
+  getChatFromDb,
+  getChatMessagesFromDb,
+  insertMessages,
+} from "@/db/chat";
+import { UIMessage } from "ai";
 
 export async function loadChat(chatId: string): Promise<UIMessage[]> {
   // First get the chat record to find the database ID
-  const chatRecord = await db
-    .select()
-    .from(chat)
-    .where(eq(chat.chatId, chatId))
-    .limit(1);
+  const chatRecord = await getChatFromDb({ chatId });
 
   if (chatRecord.length === 0) {
     return [];
   }
 
   // Get all messages for this chat
-  const messages = await db
-    .select()
-    .from(message)
-    .where(eq(message.chatDbId, chatRecord[0].id))
-    .orderBy(message.createdAt);
+  const messages = await getChatMessagesFromDb({ chatDbId: chatRecord[0].id });
 
   // Convert database messages to UIMessage format
   return messages.map((msg) => ({
@@ -44,28 +28,38 @@ export async function loadChat(chatId: string): Promise<UIMessage[]> {
 }
 
 export async function saveChat({
+  userId,
   chatId,
   messages,
 }: {
+  userId: string;
   chatId: string;
   messages: UIMessage[];
 }): Promise<void> {
   if (messages.length > 0) {
-    const res = await db
-      .select({ chatDbId: chat.id })
-      .from(chat)
-      .where(eq(chat.chatId, chatId))
-      .limit(1);
+    let chatDbId = "";
+    const res = await getChatFromDb({ chatId });
 
+    // if no existing chat found, create a new chat
+    if (res.length === 0) {
+      const result = await createChat({
+        userId,
+        chatId,
+        title: "GENERATE THIS TITLE",
+      });
+      chatDbId = result[0].id;
+    } else {
+      chatDbId = res[0].id;
+    }
     // insert the last two messages in the message table
-    await db.insert(message).values(
-      messages.slice(-2).map((msg) => ({
+    await insertMessages({
+      values: messages.slice(-2).map((msg) => ({
         messageId: msg.id,
-        chatDbId: res[0].chatDbId,
+        chatDbId,
         role: msg.role,
         parts: msg.parts,
         attachments: [], // UIMessage doesn't have attachments, use empty array
       })),
-    );
+    });
   }
 }

@@ -3,15 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Edit3, Trash2 } from "lucide-react";
-
-interface Thread {
-  id: string;
-  title: string;
-  preview: string;
-  timestamp: string;
-  // eslint-disable-next-line
-  messages: any[];
-}
+import { Thread } from "../types";
 
 interface ThreadListProps {
   threads: Thread[];
@@ -111,4 +103,3 @@ export function ThreadList({
     </div>
   );
 }
-

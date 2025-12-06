@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       size: 16,
     }),
     onFinish: ({ messages }) => {
-      saveChat({ chatId: id, messages });
+      saveChat({ userId: "TEMPID9090", chatId: id, messages });
     },
   });
 }
