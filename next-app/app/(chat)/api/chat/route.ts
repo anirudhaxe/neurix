@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const messages = [...previousMessages, message];
 
   const result = await llmCall({
-    model: "x-ai/grok-4.1-fast:free",
+    model: "kwaipilot/kat-coder-pro:free",
     messages,
     // TODO: pass this id dynamically once auth is implemented
     userId: "TEMPID9090",
