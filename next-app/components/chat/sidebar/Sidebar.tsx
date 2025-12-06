@@ -4,19 +4,13 @@ import { Card } from "@/components/ui/card";
 import { SidebarHeader } from "./SidebarHeader";
 import { ThreadList } from "./ThreadList";
 import { UserMenu } from "./UserMenu";
+import { Thread } from "../types";
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
   onNewChat: () => void;
-  threads: Array<{
-    id: string;
-    title: string;
-    preview: string;
-    timestamp: string;
-    // eslint-disable-next-line
-    messages: any[];
-  }>;
+  threads: Thread[];
   selectedThreadId: string;
   onThreadSelect: (threadId: string) => void;
   isUserMenuOpen: boolean;
@@ -79,4 +73,3 @@ export function Sidebar({
     </Card>
   );
 }
-

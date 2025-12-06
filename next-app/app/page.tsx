@@ -2,5 +2,5 @@
 import { handleNewChat } from "@/actions/chat";
 
 export default function Page() {
-  return <button onClick={async () => await handleNewChat()}>Chat</button>;
+  return <button onClick={() => handleNewChat()}>Chat</button>;
 }

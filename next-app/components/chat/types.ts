@@ -1,11 +1,8 @@
-import { UIMessage } from "ai";
-
 export interface Thread {
   id: string;
   title: string;
   preview: string;
   timestamp: string;
-  messages: UIMessage[];
 }
 
 export interface ChatState {
@@ -28,3 +25,4 @@ export interface ChatHandlers {
   onUserMenuToggle: () => void;
   setInput: (value: string) => void;
 }
+

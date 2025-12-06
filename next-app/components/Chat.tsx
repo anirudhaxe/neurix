@@ -8,54 +8,18 @@ import { Button } from "@/components/ui/button";
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
-
-// TODO: implement thread data
-// Mock thread data
-const mockThreads = [
-  {
-    id: "1",
-    title: "Help with React hooks",
-    preview: "Can you explain the difference between useState and useReducer?",
-    timestamp: "2 hours ago",
-    messages: [],
-  },
-  {
-    id: "2",
-    title: "TypeScript best practices",
-    preview: "What are some best practices for TypeScript interfaces?",
-    timestamp: "1 day ago",
-    messages: [],
-  },
-  {
-    id: "3",
-    title: "Next.js routing",
-    preview: "How do I implement dynamic routes in Next.js App Router?",
-    timestamp: "3 days ago",
-    messages: [],
-  },
-  {
-    id: "4",
-    title: "CSS Grid vs Flexbox",
-    preview: "When should I use CSS Grid over Flexbox?",
-    timestamp: "1 week ago",
-    messages: [],
-  },
-  {
-    id: "5",
-    title: "JavaScript async patterns",
-    preview:
-      "What's the difference between Promise.all and Promise.allSettled?",
-    timestamp: "2 weeks ago",
-    messages: [],
-  },
-];
+import { Thread } from "./chat/types";
+import { handleNewChat } from "@/actions/chat";
+import { redirect } from "next/navigation";
 
 export default function Chat({
   id,
   initialMessages,
+  mockThreads,
 }: {
   id: string;
   initialMessages?: UIMessage[];
+  mockThreads: Thread[];
 }) {
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -86,15 +50,11 @@ export default function Chat({
     scrollToBottom();
   }, [messages]);
 
-  const handleNewChat = () => {
-    // TODO: implement new chat
-    window.location.href = "/chat";
-  };
+  const handleSidebarNewChat = () => handleNewChat();
 
   const handleThreadSelect = (threadId: string) => {
     setSelectedThreadId(threadId);
-    // TODO: implement new thread navigation
-    window.location.href = `/chat/${threadId}`;
+    redirect(`/chat/${threadId}`);
   };
 
   const handleThemeToggle = () => {
@@ -109,7 +69,7 @@ export default function Chat({
         <Sidebar
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          onNewChat={handleNewChat}
+          onNewChat={handleSidebarNewChat}
           threads={mockThreads}
           selectedThreadId={selectedThreadId}
           onThreadSelect={handleThreadSelect}
@@ -151,7 +111,7 @@ export default function Chat({
         <Sidebar
           isCollapsed={false}
           onToggle={() => {}} // No-op for mobile - close by clicking outside
-          onNewChat={handleNewChat}
+          onNewChat={handleSidebarNewChat}
           threads={mockThreads}
           selectedThreadId={selectedThreadId}
           onThreadSelect={handleThreadSelect}
