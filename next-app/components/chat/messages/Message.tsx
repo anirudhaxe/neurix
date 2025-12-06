@@ -2,8 +2,9 @@
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import { User, Bot } from "lucide-react";
+import { User } from "lucide-react";
 import { UIMessage } from "ai";
+import Image from "next/image";
 
 interface MessageProps {
   message: UIMessage;
@@ -30,7 +31,12 @@ export function Message({ message }: MessageProps) {
             {isUser ? (
               <User className="w-4 h-4" />
             ) : (
-              <Bot className="w-4 h-4" />
+              <Image
+                src="/logo.png"
+                alt="opencontext-logo"
+                width={25}
+                height={25}
+              />
             )}
           </AvatarFallback>
         </Avatar>
@@ -78,4 +84,3 @@ export function Message({ message }: MessageProps) {
     </div>
   );
 }
-

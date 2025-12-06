@@ -2,9 +2,9 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
-import { Sparkles } from "lucide-react";
 import { UIMessage } from "ai";
 import { Message } from "./Message";
+import Image from "next/image";
 
 interface MessageListProps {
   messages: UIMessage[];
@@ -16,7 +16,12 @@ export function MessageList({ messages, messagesEndRef }: MessageListProps) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
         <Card className="w-12 h-12 rounded-full brand-gradient flex items-center justify-center mb-4 brand-shadow animate-pulse">
-          <Sparkles className="w-6 h-6 text-primary-foreground" />
+          <Image
+            src="/logo.png"
+            alt="opencontext-logo"
+            width={25}
+            height={25}
+          />
         </Card>
         <h2 className="text-xl font-semibold mb-2 bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
           Start a conversation
@@ -40,4 +45,3 @@ export function MessageList({ messages, messagesEndRef }: MessageListProps) {
     </ScrollArea>
   );
 }
-
