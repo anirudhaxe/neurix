@@ -27,7 +27,7 @@ export default function Chat({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { data: threads = [] } = trpc.chat.getChats.useQuery({
+  const { data: threads = [], refetch } = trpc.chat.getChats.useQuery({
     userId: "TEMPID9090",
   });
 
@@ -46,6 +46,10 @@ export default function Chat({
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    refetch();
+  }, [messages, refetch]);
 
   useEffect(() => {
     scrollToBottom();
