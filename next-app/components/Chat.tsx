@@ -11,6 +11,7 @@ import { MultimodalInput } from "./chat/multimodal-input";
 import { Thread } from "./chat/types";
 import { handleNewChat } from "@/actions/chat";
 import { redirect } from "next/navigation";
+import { trpc } from "@/trpc/client";
 
 export default function Chat({
   id,
@@ -27,6 +28,10 @@ export default function Chat({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [selectedThreadId, setSelectedThreadId] = useState(id);
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const { data, isLoading } = trpc.hello.useQuery({ text: "client" });
+
+  console.log(data);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
