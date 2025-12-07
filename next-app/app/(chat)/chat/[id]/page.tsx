@@ -7,8 +7,7 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const messages = await trpc.chat.loadChat({ chatId: id });
-  const mockThreads = await trpc.chat.getChats({ userId: "TEMPID9090" });
+  const initialMessages = await trpc.chat.loadChat({ chatId: id });
 
-  return <Chat id={id} initialMessages={messages} mockThreads={mockThreads} />;
+  return <Chat id={id} initialMessages={initialMessages} />;
 }

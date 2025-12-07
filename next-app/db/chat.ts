@@ -91,6 +91,34 @@ const insertMessages = ({
   return db.insert(message).values(values);
 };
 
+const deleteChatFromDb = ({
+  userId,
+  chatId,
+}: {
+  userId: string;
+  chatId: string;
+}) => {
+  return db
+    .delete(chat)
+    .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
+    .returning({ id: chat.id });
+};
+
+const updateChatTitleInDb = ({
+  userId,
+  chatId,
+  title,
+}: {
+  userId: string;
+  chatId: string;
+  title: string;
+}) => {
+  return db
+    .update(chat)
+    .set({ title })
+    .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)));
+};
+
 export {
   getChatFromDb,
   getChatMessagesFromDb,
@@ -98,4 +126,6 @@ export {
   getChatsAndPreviewMessageFromDb,
   createChat,
   insertMessages,
+  deleteChatFromDb,
+  updateChatTitleInDb,
 };

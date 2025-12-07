@@ -66,7 +66,7 @@ export const message = pgTable("message", {
   messageId: text("message_id").notNull(),
   chatDbId: uuid("chat_db_id")
     .notNull()
-    .references(() => chat.id),
+    .references(() => chat.id, { onDelete: "cascade" }),
   role: varchar("role").notNull(),
   parts: json("parts").notNull(),
   attachments: json("attachments").notNull(),
