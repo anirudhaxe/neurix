@@ -9,12 +9,20 @@ interface ThreadListProps {
   threads: Thread[];
   selectedThreadId: string;
   onThreadSelect: (threadId: string) => void;
+  handleChatDeletion: ({
+    userId,
+    chatId,
+  }: {
+    userId: string;
+    chatId: string;
+  }) => void;
 }
 
 export function ThreadList({
   threads,
   selectedThreadId,
   onThreadSelect,
+  handleChatDeletion,
 }: ThreadListProps) {
   return (
     <div className="p-2">
@@ -81,7 +89,10 @@ export function ThreadList({
                   title="Delete"
                   onClick={(e) => {
                     e.stopPropagation();
-                    // Handle delete
+                    handleChatDeletion({
+                      userId: "TEMPID9090",
+                      chatId: thread.id,
+                    });
                   }}
                 >
                   <Trash2 className="w-3 h-3" />

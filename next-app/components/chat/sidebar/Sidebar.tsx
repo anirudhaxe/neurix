@@ -18,6 +18,13 @@ interface SidebarProps {
   isDarkMode: boolean;
   onThemeToggle: () => void;
   isMobile?: boolean;
+  handleChatDeletion: ({
+    userId,
+    chatId,
+  }: {
+    userId: string;
+    chatId: string;
+  }) => void;
 }
 
 export function Sidebar({
@@ -32,6 +39,7 @@ export function Sidebar({
   isDarkMode,
   onThemeToggle,
   isMobile = false,
+  handleChatDeletion,
 }: SidebarProps) {
   const sidebarWidth = isCollapsed ? "w-0" : "w-80";
 
@@ -60,6 +68,7 @@ export function Sidebar({
           threads={threads}
           selectedThreadId={selectedThreadId}
           onThreadSelect={onThreadSelect}
+          handleChatDeletion={handleChatDeletion}
         />
       </div>
 

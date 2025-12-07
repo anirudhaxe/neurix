@@ -111,15 +111,19 @@ export const chatRouteController = createTRPCRouter({
   deleteChat: publicProcedure
     .input(z.object({ userId: z.string(), chatId: z.string() }))
     .mutation(async ({ input: { userId, chatId } }) => {
-      const result = await deleteChatFromDb({
-        userId,
-        chatId,
-      });
+      try {
+        const result = await deleteChatFromDb({
+          userId,
+          chatId,
+        });
 
-      return {
-        id: result[0]?.id || null,
-        status: "ok",
-      };
+        return {
+          id: result[0]?.id || null,
+          status: "ok",
+        };
+      } catch (error) {
+        console.error(error);
+      }
     }),
   generateChatTitle: publicProcedure
     .input(

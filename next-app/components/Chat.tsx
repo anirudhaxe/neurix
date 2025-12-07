@@ -45,6 +45,24 @@ export default function Chat({
   const { mutate: mutateGenerateChatTitle } =
     trpc.chat.generateChatTitle.useMutation();
 
+  const { mutate: mutateChatDeletion } = trpc.chat.deleteChat.useMutation({
+    onSuccess: (res) => {
+      refetch();
+    },
+  });
+
+  const handleChatDeletion = ({
+    userId,
+    chatId,
+  }: {
+    userId: string;
+    chatId: string;
+  }) => {
+    mutateChatDeletion({
+      userId,
+      chatId,
+    });
+  };
   // scroll to bottom when messages populate
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -103,6 +121,7 @@ export default function Chat({
           isDarkMode={isDarkMode}
           onThemeToggle={handleThemeToggle}
           isMobile={false}
+          handleChatDeletion={handleChatDeletion}
         />
       </div>
 
@@ -145,6 +164,7 @@ export default function Chat({
           isDarkMode={isDarkMode}
           onThemeToggle={handleThemeToggle}
           isMobile={true}
+          handleChatDeletion={handleChatDeletion}
         />
       </div>
 
