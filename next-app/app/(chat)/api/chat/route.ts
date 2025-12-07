@@ -1,12 +1,12 @@
 import { UIMessage, createIdGenerator } from "ai";
-import { loadChat, saveChat } from "@/lib/chat-store";
 import { llmCall } from "@/lib/ai/llm";
 import { weatherTool, convertFahrenheitToCelsiusTool } from "@/lib/ai/tools";
+import { trpc } from "@/trpc/server";
 
 export async function POST(req: Request) {
   const { message, id }: { message: UIMessage; id: string } = await req.json();
 
-  const previousMessages = await loadChat(id);
+  const previousMessages = await trpc.chat.loadChat({ chatId: id });
 
   // append latest message to previous messages
   const messages = [...previousMessages, message];
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       size: 16,
     }),
     onFinish: ({ messages }) => {
-      saveChat({ userId: "TEMPID9090", chatId: id, messages });
+      trpc.chat.saveChat({ userId: "TEMPID9090", chatId: id, messages });
     },
   });
 }

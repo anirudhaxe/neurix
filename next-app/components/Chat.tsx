@@ -11,6 +11,7 @@ import { MultimodalInput } from "./chat/multimodal-input";
 import { Thread } from "./chat/types";
 import { handleNewChat } from "@/actions/chat";
 import { redirect } from "next/navigation";
+import { trpc } from "@/trpc/client";
 
 export default function Chat({
   id,
