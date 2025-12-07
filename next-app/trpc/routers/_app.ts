@@ -1,35 +1,13 @@
-import { z } from "zod";
-import { baseProcedure, createTRPCRouter } from "../init";
+import { createTRPCRouter } from "../init";
+import { chatRouteController } from "./routeControllers/chat";
 
+/**
+ * This is the primary router for your server.
+ *
+ * All routers added in /api/routers should be manually added here.
+ */
 export const appRouter = createTRPCRouter({
-  // Example query
-  hello: baseProcedure
-    .input(
-      z.object({
-        text: z.string(),
-      }),
-    )
-    .query((opts) => {
-      return {
-        greeting: `Hello ${opts.input.text}!`,
-      };
-    }),
-
-  // Example mutation
-  createPost: baseProcedure
-    .input(
-      z.object({
-        title: z.string(),
-        content: z.string(),
-      }),
-    )
-    .mutation(async (opts) => {
-      // Your database logic here
-      return {
-        id: "1",
-        ...opts.input,
-      };
-    }),
+  chat: chatRouteController,
 });
 
 // Export type definition of API

@@ -29,10 +29,6 @@ export default function Chat({
   const [selectedThreadId, setSelectedThreadId] = useState(id);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const { data, isLoading } = trpc.hello.useQuery({ text: "client" });
-
-  console.log(data);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status, stop } = useChat({
