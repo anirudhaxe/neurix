@@ -4,11 +4,9 @@ import { useChat } from "@ai-sdk/react";
 import { useState, useRef, useEffect } from "react";
 import { DefaultChatTransport, UIMessage } from "ai";
 import { Button } from "@/components/ui/button";
-
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
-import { Thread } from "./chat/types";
 import { handleNewChat } from "@/actions/chat";
 import { redirect } from "next/navigation";
 import { trpc } from "@/trpc/client";
@@ -16,11 +14,9 @@ import { trpc } from "@/trpc/client";
 export default function Chat({
   id,
   initialMessages,
-  mockThreads,
 }: {
   id: string;
   initialMessages?: UIMessage[];
-  mockThreads: Thread[];
 }) {
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -30,6 +26,10 @@ export default function Chat({
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { data: threads = [] } = trpc.chat.getChats.useQuery({
+    userId: "TEMPID9090",
+  });
 
   const { messages, sendMessage, status, stop } = useChat({
     id,
@@ -51,6 +51,19 @@ export default function Chat({
     scrollToBottom();
   }, [messages]);
 
+  // sample loading spinner
+  // // Show loading state while messages are being fetched
+  // if (isLoadingMessages) {
+  //   return (
+  //     <div className="flex h-screen items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+  //         <p className="text-muted-foreground">Loading chat...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   const handleSidebarNewChat = () => handleNewChat();
 
   const handleThreadSelect = (threadId: string) => {
@@ -71,7 +84,7 @@ export default function Chat({
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           onNewChat={handleSidebarNewChat}
-          threads={mockThreads}
+          threads={threads}
           selectedThreadId={selectedThreadId}
           onThreadSelect={handleThreadSelect}
           isUserMenuOpen={isUserMenuOpen}
@@ -113,7 +126,7 @@ export default function Chat({
           isCollapsed={false}
           onToggle={() => {}} // No-op for mobile - close by clicking outside
           onNewChat={handleSidebarNewChat}
-          threads={mockThreads}
+          threads={threads}
           selectedThreadId={selectedThreadId}
           onThreadSelect={handleThreadSelect}
           isUserMenuOpen={isUserMenuOpen}
