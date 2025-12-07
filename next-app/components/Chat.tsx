@@ -42,18 +42,25 @@ export default function Chat({
     }),
   });
 
+  const { mutate: mutateGenerateChatTitle } =
+    trpc.chat.generateChatTitle.useMutation();
+
   // scroll to bottom when messages populate
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    refetch();
-  }, [messages, refetch]);
-
-  useEffect(() => {
+    if (messages.length === 2) {
+      mutateGenerateChatTitle({
+        chatId: id,
+        userId: "TEMPID9090",
+        messages,
+      });
+    }
     scrollToBottom();
-  }, [messages]);
+    refetch();
+  }, [messages, refetch, mutateGenerateChatTitle, id]);
 
   // sample loading spinner
   // // Show loading state while messages are being fetched

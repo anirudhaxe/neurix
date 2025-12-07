@@ -11,7 +11,10 @@ import {
   getChatMessagesFromDb,
   insertMessages,
   getChatsAndPreviewMessageFromDb,
+  deleteChatFromDb,
+  updateChatTitleInDb,
 } from "@/db/chat";
+import { generateTextCall } from "@/lib/ai/llm";
 
 // Zod schema for UIMessage
 const UIMessageSchema = z.object({
@@ -87,7 +90,7 @@ export const chatRouteController = createTRPCRouter({
           const result = await createChat({
             userId,
             chatId,
-            title: "GENERATE THIS TITLE",
+            title: "Untitled Chat",
           });
           chatDbId = result[0].id;
         } else {
@@ -104,5 +107,43 @@ export const chatRouteController = createTRPCRouter({
           })),
         });
       }
+    }),
+  deleteChat: publicProcedure
+    .input(z.object({ userId: z.string(), chatId: z.string() }))
+    .mutation(async ({ input: { userId, chatId } }) => {
+      const result = await deleteChatFromDb({
+        userId,
+        chatId,
+      });
+
+      return {
+        id: result[0]?.id || null,
+        status: "ok",
+      };
+    }),
+  generateChatTitle: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        chatId: z.string(),
+        messages: z.array(UIMessageSchema),
+      }),
+    )
+    .mutation(async ({ input: { userId, chatId, messages } }) => {
+      const result = await generateTextCall({
+        system:
+          "Create a brief, descriptive title (3-6 words, should be plain string) for sidebar display based on these initial messages from an AI chat:",
+        prompt: JSON.stringify(messages),
+      });
+
+      await updateChatTitleInDb({
+        userId,
+        chatId,
+        title: result.text,
+      });
+
+      return {
+        status: "ok",
+      };
     }),
 });
