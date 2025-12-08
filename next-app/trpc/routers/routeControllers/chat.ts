@@ -15,6 +15,7 @@ import {
   updateChatTitleInDb,
 } from "@/db/chat";
 import { generateTextCall } from "@/lib/ai/llm";
+import { handleTRPCProcedureError } from "@/lib/utils";
 
 // Zod schema for UIMessage
 const UIMessageSchema = z.object({
@@ -27,50 +28,58 @@ export const chatRouteController = createTRPCRouter({
   getChats: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ input }) => {
-      const result = await getChatsAndPreviewMessageFromDb({
-        userId: input.userId,
-      });
+      try {
+        const result = await getChatsAndPreviewMessageFromDb({
+          userId: input.userId,
+        });
 
-      return result.map((chat) => {
-        let preview = "";
+        return result.map((chat) => {
+          let preview = "";
 
-        if (Array.isArray(chat.latestMessage?.parts)) {
-          preview = chat.latestMessage?.parts[0]?.text || "";
-        }
+          if (Array.isArray(chat.latestMessage?.parts)) {
+            preview = chat.latestMessage?.parts[0]?.text || "";
+          }
 
-        return {
-          id: chat.chatId,
-          title: chat.title,
-          preview,
-          // TODO: implement this type stamp text
-          // timestamp: chat.updatedAt,
-          timestamp: "1 day ago",
-        };
-      });
+          return {
+            id: chat.chatId,
+            title: chat.title,
+            preview,
+            // TODO: implement this type stamp text
+            // timestamp: chat.updatedAt,
+            timestamp: "1 day ago",
+          };
+        });
+      } catch (error) {
+        handleTRPCProcedureError(error, "TRPC QUERY /getChats");
+      }
     }),
   loadChat: publicProcedure
     .input(z.object({ chatId: z.string() }))
     .query(async ({ input }) => {
-      // First get the chat record to find the database ID
-      const chatRecord = await getChatFromDb({ chatId: input.chatId });
+      try {
+        // First get the chat record to find the database ID
+        const chatRecord = await getChatFromDb({ chatId: input.chatId });
 
-      if (chatRecord.length === 0) {
-        return [];
+        if (chatRecord.length === 0) {
+          return [];
+        }
+
+        // Get all messages for this chat
+        const messages = await getChatMessagesFromDb({
+          chatDbId: chatRecord[0].id,
+        });
+
+        // Convert database messages to UIMessage format
+        return messages.map((msg) => ({
+          id: msg.messageId,
+          role: msg.role as "user" | "assistant" | "system",
+          // TODO: fix the parts type
+          // eslint-disable-next-line
+          parts: msg.parts as any[],
+        }));
+      } catch (error) {
+        handleTRPCProcedureError(error, "TRPC QUERY /loadChat");
       }
-
-      // Get all messages for this chat
-      const messages = await getChatMessagesFromDb({
-        chatDbId: chatRecord[0].id,
-      });
-
-      // Convert database messages to UIMessage format
-      return messages.map((msg) => ({
-        id: msg.messageId,
-        role: msg.role as "user" | "assistant" | "system",
-        // TODO: fix the parts type
-        // eslint-disable-next-line
-        parts: msg.parts as any[],
-      }));
     }),
   saveChat: publicProcedure
     .input(
@@ -81,31 +90,35 @@ export const chatRouteController = createTRPCRouter({
       }),
     )
     .mutation(async ({ input: { userId, chatId, messages } }) => {
-      if (messages.length > 0) {
-        let chatDbId = "";
-        const res = await getChatFromDb({ chatId });
+      try {
+        if (messages.length > 0) {
+          let chatDbId = "";
+          const res = await getChatFromDb({ chatId });
 
-        // if no existing chat found, create a new chat
-        if (res.length === 0) {
-          const result = await createChat({
-            userId,
-            chatId,
-            title: "Untitled Chat",
+          // if no existing chat found, create a new chat
+          if (res.length === 0) {
+            const result = await createChat({
+              userId,
+              chatId,
+              title: "Untitled Chat",
+            });
+            chatDbId = result[0].id;
+          } else {
+            chatDbId = res[0].id;
+          }
+          // insert the last two messages in the message table
+          await insertMessages({
+            values: messages.slice(-2).map((msg) => ({
+              messageId: msg.id,
+              chatDbId,
+              role: msg.role,
+              parts: msg.parts,
+              attachments: [], // UIMessage doesn't have attachments, use empty array
+            })),
           });
-          chatDbId = result[0].id;
-        } else {
-          chatDbId = res[0].id;
         }
-        // insert the last two messages in the message table
-        await insertMessages({
-          values: messages.slice(-2).map((msg) => ({
-            messageId: msg.id,
-            chatDbId,
-            role: msg.role,
-            parts: msg.parts,
-            attachments: [], // UIMessage doesn't have attachments, use empty array
-          })),
-        });
+      } catch (error) {
+        handleTRPCProcedureError(error, "TRPC MUTATION /saveChat");
       }
     }),
   deleteChat: publicProcedure
@@ -122,7 +135,7 @@ export const chatRouteController = createTRPCRouter({
           status: "ok",
         };
       } catch (error) {
-        console.error(error);
+        handleTRPCProcedureError(error, "TRPC MUTATION /deleteChat");
       }
     }),
   generateChatTitle: publicProcedure
@@ -134,20 +147,24 @@ export const chatRouteController = createTRPCRouter({
       }),
     )
     .mutation(async ({ input: { userId, chatId, messages } }) => {
-      const result = await generateTextCall({
-        system:
-          "Create a brief, descriptive title (3-6 words, should be plain string) for sidebar display based on these initial messages from an AI chat:",
-        prompt: JSON.stringify(messages),
-      });
+      try {
+        const result = await generateTextCall({
+          system:
+            "Create a brief, descriptive title (3-6 words, should be plain string) for sidebar display based on these initial messages from an AI chat:",
+          prompt: JSON.stringify(messages),
+        });
 
-      await updateChatTitleInDb({
-        userId,
-        chatId,
-        title: result.text,
-      });
+        await updateChatTitleInDb({
+          userId,
+          chatId,
+          title: result.text,
+        });
 
-      return {
-        status: "ok",
-      };
+        return {
+          status: "ok",
+        };
+      } catch (error) {
+        handleTRPCProcedureError(error, "TRPC MUTATION /generateChatTitle");
+      }
     }),
 });
