@@ -2,12 +2,12 @@
 
 import { useChat } from "@ai-sdk/react";
 import { useState, useRef, useEffect } from "react";
-import { DefaultChatTransport, UIMessage } from "ai";
+import { DefaultChatTransport, generateId, UIMessage } from "ai";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { trpc } from "@/trpc/client";
 import { authClient } from "@/lib/auth/auth-client";
 
@@ -19,6 +19,8 @@ export default function Chat({
   initialMessages?: UIMessage[];
 }) {
   const { isPending, data } = authClient.useSession();
+
+  const router = useRouter();
 
   // const trpcUtils = trpc.useUtils();
   const [input, setInput] = useState("");
@@ -89,7 +91,9 @@ export default function Chat({
   //   );
   // }
 
-  const handleSidebarNewChat = () => redirect("/chat");
+  const handleSidebarNewChat = () => {
+    router.push(`/chat/${generateId()}`, { scroll: false });
+  };
 
   const handleThreadSelect = (threadId: string) => {
     setSelectedThreadId(threadId);
