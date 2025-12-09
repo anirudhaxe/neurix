@@ -18,9 +18,14 @@ export default function Chat({
   id: string;
   initialMessages?: UIMessage[];
 }) {
+  // TODO: add session checks here in this page
   const { isPending, data } = authClient.useSession();
 
   const router = useRouter();
+
+  const isChatTitleGenerated = useRef(
+    initialMessages ? initialMessages?.length >= 2 : false,
+  );
 
   // const trpcUtils = trpc.useUtils();
   const [input, setInput] = useState("");
@@ -45,7 +50,21 @@ export default function Chat({
         return { body: { message: messages[messages.length - 1], id } };
       },
     }),
-    onFinish: async () => {
+    onFinish: async ({ messages: newMessages }) => {
+      console.log(
+        "ref",
+        isChatTitleGenerated.current,
+        "Messages length",
+        newMessages?.length,
+      );
+      if (isChatTitleGenerated.current === false && newMessages?.length >= 2) {
+        generateChatTitle({
+          userId: data?.user.id || "",
+          messages: newMessages,
+          chatId: id,
+        });
+        isChatTitleGenerated.current = true;
+      }
       // await trpcUtils.chat.getChats.invalidate({ userId: data?.user.id });
       await refetch();
     },
@@ -56,6 +75,14 @@ export default function Chat({
       await refetch();
     },
   });
+
+  const { mutate: generateChatTitle } = trpc.chat.generateChatTitle.useMutation(
+    {
+      onSuccess: async () => {
+        await refetch();
+      },
+    },
+  );
 
   const handleChatDeletion = ({
     userId,

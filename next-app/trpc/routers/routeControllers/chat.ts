@@ -12,6 +12,7 @@ import {
   insertMessages,
   getChatsAndPreviewMessageFromDb,
   deleteChatFromDb,
+  updateChatTitleInDb,
 } from "@/db/chat";
 import { generateTextCall } from "@/lib/ai/llm";
 import { handleTRPCProcedureError } from "@/lib/utils";
@@ -96,22 +97,11 @@ export const chatRouteController = createTRPCRouter({
 
           // if no existing chat found, create a new chat
           if (res.length === 0) {
-            // TODO: shift this logic to somewhere else to improve the time to first response
-            const generatedTitle = await generateTextCall({
-              system:
-                "Create a brief, descriptive title (3-6 words, should be plain string with no markdown formatting) for sidebar display based on these initial messages from an AI chat:",
-              prompt: JSON.stringify(messages),
-            }).catch((error) =>
-              console.error(
-                "ERROR: Error while generating title for chat:",
-                error,
-              ),
-            );
-
             const result = await createChat({
               userId,
               chatId,
-              title: generatedTitle?.text || "Untitled Chat",
+              // title: generatedTitle?.text || "Untitled Chat",
+              title: "Untitled Chat",
             });
             chatDbId = result[0].id;
           } else {
@@ -149,33 +139,33 @@ export const chatRouteController = createTRPCRouter({
         handleTRPCProcedureError(error, "TRPC MUTATION /deleteChat");
       }
     }),
-  // generateChatTitle: publicProcedure
-  //   .input(
-  //     z.object({
-  //       userId: z.string(),
-  //       chatId: z.string(),
-  //       messages: z.array(UIMessageSchema),
-  //     }),
-  //   )
-  //   .mutation(async ({ input: { userId, chatId, messages } }) => {
-  //     try {
-  //       const result = await generateTextCall({
-  //         system:
-  //           "Create a brief, descriptive title (3-6 words, should be plain string) for sidebar display based on these initial messages from an AI chat:",
-  //         prompt: JSON.stringify(messages),
-  //       });
-  //
-  //       await updateChatTitleInDb({
-  //         userId,
-  //         chatId,
-  //         title: result.text,
-  //       });
-  //
-  //       return {
-  //         status: "ok",
-  //       };
-  //     } catch (error) {
-  //       handleTRPCProcedureError(error, "TRPC MUTATION /generateChatTitle");
-  //     }
-  //   }),
+  generateChatTitle: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        chatId: z.string(),
+        messages: z.array(UIMessageSchema),
+      }),
+    )
+    .mutation(async ({ input: { userId, chatId, messages } }) => {
+      try {
+        const result = await generateTextCall({
+          system:
+            "Create a brief, descriptive title heading (3-6 words, should be plain string with no markdown formatting) for sidebar display based on these initial first messages from an AI chat:",
+          prompt: JSON.stringify(messages),
+        });
+
+        await updateChatTitleInDb({
+          userId,
+          chatId,
+          title: result.text,
+        });
+
+        return {
+          status: "ok",
+        };
+      } catch (error) {
+        handleTRPCProcedureError(error, "TRPC MUTATION /generateChatTitle");
+      }
+    }),
 });

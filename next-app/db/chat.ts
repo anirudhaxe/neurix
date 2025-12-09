@@ -104,20 +104,20 @@ const deleteChatFromDb = ({
     .returning({ id: chat.id });
 };
 
-// const updateChatTitleInDb = ({
-//   userId,
-//   chatId,
-//   title,
-// }: {
-//   userId: string;
-//   chatId: string;
-//   title: string;
-// }) => {
-//   return db
-//     .update(chat)
-//     .set({ title })
-//     .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)));
-// };
+const updateChatTitleInDb = ({
+  userId,
+  chatId,
+  title,
+}: {
+  userId: string;
+  chatId: string;
+  title: string;
+}) => {
+  return db
+    .update(chat)
+    .set({ title })
+    .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)));
+};
 
 export {
   getChatFromDb,
@@ -127,5 +127,5 @@ export {
   createChat,
   insertMessages,
   deleteChatFromDb,
-  // updateChatTitleInDb,
+  updateChatTitleInDb,
 };
