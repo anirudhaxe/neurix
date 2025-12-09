@@ -6,6 +6,7 @@ import { Edit3, Trash2 } from "lucide-react";
 import { Thread } from "../types";
 
 interface ThreadListProps {
+  userId: string;
   threads: Thread[];
   selectedThreadId: string;
   onThreadSelect: (threadId: string) => void;
@@ -19,6 +20,7 @@ interface ThreadListProps {
 }
 
 export function ThreadList({
+  userId,
   threads,
   selectedThreadId,
   onThreadSelect,
@@ -90,7 +92,7 @@ export function ThreadList({
                   onClick={(e) => {
                     e.stopPropagation();
                     handleChatDeletion({
-                      userId: "TEMPID9090",
+                      userId,
                       chatId: thread.id,
                     });
                   }}

@@ -9,6 +9,7 @@ import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
 import { redirect } from "next/navigation";
 import { trpc } from "@/trpc/client";
+import { authClient } from "@/lib/auth/auth-client";
 
 export default function Chat({
   id,
@@ -17,6 +18,8 @@ export default function Chat({
   id: string;
   initialMessages?: UIMessage[];
 }) {
+  const { isPending, data } = authClient.useSession();
+
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -27,7 +30,7 @@ export default function Chat({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: threads = [], refetch } = trpc.chat.getChats.useQuery({
-    userId: "TEMPID9090",
+    userId: data?.user.id || "",
   });
 
   const { messages, sendMessage, status, stop } = useChat({
@@ -71,7 +74,7 @@ export default function Chat({
     if (messages.length === 2) {
       mutateGenerateChatTitle({
         chatId: id,
-        userId: "TEMPID9090",
+        userId: data?.user.id || "",
         messages,
       });
     }
@@ -104,11 +107,14 @@ export default function Chat({
     // TODO: implement theme toggle
   };
 
+  if (isPending) return <div>Loading...</div>;
+
   return (
     <div className="flex h-screen bg-linear-to-br from-background via-background to-card">
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex">
         <Sidebar
+          userId={data?.user.id || ""}
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           onNewChat={handleSidebarNewChat}
