@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
-import { handleNewChat } from "@/actions/chat";
 import { redirect } from "next/navigation";
 import { trpc } from "@/trpc/client";
 
@@ -93,7 +92,7 @@ export default function Chat({
   //   );
   // }
 
-  const handleSidebarNewChat = () => handleNewChat();
+  const handleSidebarNewChat = () => redirect("/chat");
 
   const handleThreadSelect = (threadId: string) => {
     setSelectedThreadId(threadId);
