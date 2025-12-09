@@ -51,12 +51,6 @@ export default function Chat({
       },
     }),
     onFinish: async ({ messages: newMessages }) => {
-      console.log(
-        "ref",
-        isChatTitleGenerated.current,
-        "Messages length",
-        newMessages?.length,
-      );
       if (isChatTitleGenerated.current === false && newMessages?.length >= 2) {
         generateChatTitle({
           userId: data?.user.id || "",
