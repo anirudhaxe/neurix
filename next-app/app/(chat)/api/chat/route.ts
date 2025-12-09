@@ -25,7 +25,6 @@ export async function POST(req: Request) {
   const result = await llmCall({
     model: "kwaipilot/kat-coder-pro:free",
     messages,
-    // TODO: pass this id dynamically once auth is implemented
     userId: session.user.id,
     stopWhen: 5,
     tools: {
@@ -41,8 +40,12 @@ export async function POST(req: Request) {
       prefix: "msg",
       size: 16,
     }),
-    onFinish: ({ messages }) => {
-      trpc.chat.saveChat({ userId: session.user.id, chatId: id, messages });
+    onFinish: async ({ messages }) => {
+      await trpc.chat.saveChat({
+        userId: session.user.id,
+        chatId: id,
+        messages,
+      });
     },
   });
 }

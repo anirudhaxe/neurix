@@ -20,6 +20,7 @@ export default function Chat({
 }) {
   const { isPending, data } = authClient.useSession();
 
+  // const trpcUtils = trpc.useUtils();
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -42,14 +43,15 @@ export default function Chat({
         return { body: { message: messages[messages.length - 1], id } };
       },
     }),
+    onFinish: async () => {
+      // await trpcUtils.chat.getChats.invalidate({ userId: data?.user.id });
+      await refetch();
+    },
   });
 
-  const { mutate: mutateGenerateChatTitle } =
-    trpc.chat.generateChatTitle.useMutation();
-
   const { mutate: mutateChatDeletion } = trpc.chat.deleteChat.useMutation({
-    onSuccess: (res) => {
-      refetch();
+    onSuccess: async () => {
+      await refetch();
     },
   });
 
@@ -71,16 +73,8 @@ export default function Chat({
   };
 
   useEffect(() => {
-    if (messages.length === 2) {
-      mutateGenerateChatTitle({
-        chatId: id,
-        userId: data?.user.id || "",
-        messages,
-      });
-    }
     scrollToBottom();
-    refetch();
-  }, [messages, refetch, mutateGenerateChatTitle, id]);
+  }, [messages]);
 
   // sample loading spinner
   // // Show loading state while messages are being fetched
@@ -158,6 +152,7 @@ export default function Chat({
         }`}
       >
         <Sidebar
+          userId={data?.user.id || ""}
           isCollapsed={false}
           onToggle={() => {}} // No-op for mobile - close by clicking outside
           onNewChat={handleSidebarNewChat}
