@@ -100,6 +100,7 @@ export const chatRouteController = createTRPCRouter({
             const result = await createChat({
               userId,
               chatId,
+              // title: generatedTitle?.text || "Untitled Chat",
               title: "Untitled Chat",
             });
             chatDbId = result[0].id;
@@ -150,7 +151,7 @@ export const chatRouteController = createTRPCRouter({
       try {
         const result = await generateTextCall({
           system:
-            "Create a brief, descriptive title (3-6 words, should be plain string) for sidebar display based on these initial messages from an AI chat:",
+            "Create a brief, descriptive title heading (3-6 words, should be plain string with no markdown formatting) for sidebar display based on these initial first messages from an AI chat:",
           prompt: JSON.stringify(messages),
         });
 

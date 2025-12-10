@@ -1,6 +1,5 @@
-"use client";
-import { handleNewChat } from "@/actions/chat";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <button onClick={() => handleNewChat()}>Chat</button>;
+  redirect("/chat");
 }

@@ -2,14 +2,14 @@
 
 import { useChat } from "@ai-sdk/react";
 import { useState, useRef, useEffect } from "react";
-import { DefaultChatTransport, UIMessage } from "ai";
+import { DefaultChatTransport, generateId, UIMessage } from "ai";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
-import { handleNewChat } from "@/actions/chat";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { trpc } from "@/trpc/client";
+import { authClient } from "@/lib/auth/auth-client";
 
 export default function Chat({
   id,
@@ -18,6 +18,23 @@ export default function Chat({
   id: string;
   initialMessages?: UIMessage[];
 }) {
+  const router = useRouter();
+
+  const {
+    isPending: isSessionFetchPending,
+    data,
+    error: isSessionFetchingErrored,
+  } = authClient.useSession();
+
+  if (isSessionFetchingErrored) {
+    router.push("sign-in");
+  }
+
+  const isChatTitleGenerated = useRef(
+    initialMessages ? initialMessages?.length >= 2 : false,
+  );
+
+  // const trpcUtils = trpc.useUtils();
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -28,7 +45,7 @@ export default function Chat({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: threads = [], refetch } = trpc.chat.getChats.useQuery({
-    userId: "TEMPID9090",
+    userId: data?.user.id || "",
   });
 
   const { messages, sendMessage, status, stop } = useChat({
@@ -40,16 +57,33 @@ export default function Chat({
         return { body: { message: messages[messages.length - 1], id } };
       },
     }),
-  });
-
-  const { mutate: mutateGenerateChatTitle } =
-    trpc.chat.generateChatTitle.useMutation();
-
-  const { mutate: mutateChatDeletion } = trpc.chat.deleteChat.useMutation({
-    onSuccess: (res) => {
-      refetch();
+    onFinish: async ({ messages: newMessages }) => {
+      if (isChatTitleGenerated.current === false && newMessages?.length >= 2) {
+        generateChatTitle({
+          userId: data?.user.id || "",
+          messages: newMessages,
+          chatId: id,
+        });
+        isChatTitleGenerated.current = true;
+      }
+      // await trpcUtils.chat.getChats.invalidate({ userId: data?.user.id });
+      await refetch();
     },
   });
+
+  const { mutate: mutateChatDeletion } = trpc.chat.deleteChat.useMutation({
+    onSuccess: async () => {
+      await refetch();
+    },
+  });
+
+  const { mutate: generateChatTitle } = trpc.chat.generateChatTitle.useMutation(
+    {
+      onSuccess: async () => {
+        await refetch();
+      },
+    },
+  );
 
   const handleChatDeletion = ({
     userId,
@@ -69,35 +103,16 @@ export default function Chat({
   };
 
   useEffect(() => {
-    if (messages.length === 2) {
-      mutateGenerateChatTitle({
-        chatId: id,
-        userId: "TEMPID9090",
-        messages,
-      });
-    }
     scrollToBottom();
-    refetch();
-  }, [messages, refetch, mutateGenerateChatTitle, id]);
+  }, [messages]);
 
-  // sample loading spinner
-  // // Show loading state while messages are being fetched
-  // if (isLoadingMessages) {
-  //   return (
-  //     <div className="flex h-screen items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-  //         <p className="text-muted-foreground">Loading chat...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  const handleSidebarNewChat = () => handleNewChat();
+  const handleSidebarNewChat = () => {
+    router.push(`/chat/${generateId()}`, { scroll: false });
+  };
 
   const handleThreadSelect = (threadId: string) => {
     setSelectedThreadId(threadId);
-    redirect(`/chat/${threadId}`);
+    router.push(`/chat/${threadId}`);
   };
 
   const handleThemeToggle = () => {
@@ -105,11 +120,23 @@ export default function Chat({
     // TODO: implement theme toggle
   };
 
+  if (isSessionFetchPending) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading chat...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen bg-linear-to-br from-background via-background to-card">
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex">
         <Sidebar
+          userId={data?.user.id || ""}
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           onNewChat={handleSidebarNewChat}
@@ -153,6 +180,7 @@ export default function Chat({
         }`}
       >
         <Sidebar
+          userId={data?.user.id || ""}
           isCollapsed={false}
           onToggle={() => {}} // No-op for mobile - close by clicking outside
           onNewChat={handleSidebarNewChat}
