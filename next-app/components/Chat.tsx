@@ -18,10 +18,17 @@ export default function Chat({
   id: string;
   initialMessages?: UIMessage[];
 }) {
-  // TODO: add session checks here in this page
-  const { isPending, data } = authClient.useSession();
-
   const router = useRouter();
+
+  const {
+    isPending: isSessionFetchPending,
+    data,
+    error: isSessionFetchingErrored,
+  } = authClient.useSession();
+
+  if (isSessionFetchingErrored) {
+    router.push("sign-in");
+  }
 
   const isChatTitleGenerated = useRef(
     initialMessages ? initialMessages?.length >= 2 : false,
@@ -99,7 +106,21 @@ export default function Chat({
     scrollToBottom();
   }, [messages]);
 
-  if (isPending) {
+  const handleSidebarNewChat = () => {
+    router.push(`/chat/${generateId()}`, { scroll: false });
+  };
+
+  const handleThreadSelect = (threadId: string) => {
+    setSelectedThreadId(threadId);
+    router.push(`/chat/${threadId}`);
+  };
+
+  const handleThemeToggle = () => {
+    setIsDarkMode(!isDarkMode);
+    // TODO: implement theme toggle
+  };
+
+  if (isSessionFetchPending) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -109,20 +130,6 @@ export default function Chat({
       </div>
     );
   }
-
-  const handleSidebarNewChat = () => {
-    router.push(`/chat/${generateId()}`, { scroll: false });
-  };
-
-  const handleThreadSelect = (threadId: string) => {
-    setSelectedThreadId(threadId);
-    redirect(`/chat/${threadId}`);
-  };
-
-  const handleThemeToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    // TODO: implement theme toggle
-  };
 
   return (
     <div className="flex h-screen bg-linear-to-br from-background via-background to-card">
