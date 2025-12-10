@@ -12,9 +12,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,12 +36,11 @@ export default function Page() {
         },
         onSuccess: () => {
           setLoading(false);
-          redirect("/");
+          router.push("/");
         },
         onError: (ctx) => {
           setLoading(false);
-          // handle error
-          setError(ctx.error.message || "An error occurred during sign up");
+          setError(ctx.error.message || "An error occurred during sign in");
         },
       },
     );

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
   // TODO: handle this error later
   if (!session?.session)
-    return Response.json({ message: "Not authorized" }, { status: 500 });
+    return Response.json({ message: "Not authorized" }, { status: 401 });
 
   // append latest message to previous messages
   const messages = [...(previousMessages || []), message];

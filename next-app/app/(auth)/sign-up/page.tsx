@@ -11,9 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -37,11 +38,10 @@ export default function Page() {
         },
         onSuccess: () => {
           setLoading(false);
-          redirect("/");
+          router.push("/");
         },
         onError: (ctx) => {
           setLoading(false);
-          // handle error
           setError(ctx.error.message || "An error occurred during sign up");
         },
       },
