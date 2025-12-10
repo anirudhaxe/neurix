@@ -99,18 +99,16 @@ export default function Chat({
     scrollToBottom();
   }, [messages]);
 
-  // sample loading spinner
-  // // Show loading state while messages are being fetched
-  // if (isLoadingMessages) {
-  //   return (
-  //     <div className="flex h-screen items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-  //         <p className="text-muted-foreground">Loading chat...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (isPending) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading chat...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleSidebarNewChat = () => {
     router.push(`/chat/${generateId()}`, { scroll: false });
@@ -125,8 +123,6 @@ export default function Chat({
     setIsDarkMode(!isDarkMode);
     // TODO: implement theme toggle
   };
-
-  if (isPending) return <div>Loading...</div>;
 
   return (
     <div className="flex h-screen bg-linear-to-br from-background via-background to-card">
