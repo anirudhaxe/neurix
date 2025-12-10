@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { trpc } from "@/trpc/client";
 import { authClient } from "@/lib/auth/auth-client";
 
