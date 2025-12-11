@@ -56,9 +56,10 @@ export default function Chat({
           chatId: id,
         });
         isChatTitleGenerated.current = true;
+      } else {
+        // await trpcUtils.chat.getChats.invalidate({ userId });
+        await refetch();
       }
-      // await trpcUtils.chat.getChats.invalidate({ userId });
-      await refetch();
     },
   });
 
