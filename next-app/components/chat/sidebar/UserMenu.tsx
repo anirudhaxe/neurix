@@ -83,36 +83,36 @@ export function UserMenu({
 
       {isOpen && (
         <Card className="mt-2 bg-card border border-border rounded-lg brand-shadow-lg overflow-hidden animate-in slide-in-from-bottom-2 fade-in-0 duration-200">
-          <Button
-            onClick={() => {
-              onThemeToggle();
-              onToggle();
-            }}
-            className="w-full flex items-center gap-3 px-3 py-2 text-sm brand-hover rounded transition-colors justify-start"
-            variant="ghost"
-          >
-            {isDarkMode ? (
-              <Sun className="w-4 h-4 text-primary" />
-            ) : (
-              <Moon className="w-4 h-4 text-primary" />
-            )}
-            <span className="text-foreground">
-              {isDarkMode ? "Light mode" : "Dark mode"}
-            </span>
-          </Button>
-          <Separator className="bg-border/50" />
-          <Button
-            onClick={() => {
-              onToggle();
-              // Handle settings
-            }}
-            className="w-full flex items-center gap-3 px-3 py-2 text-sm brand-hover rounded transition-colors justify-start"
-            variant="ghost"
-          >
-            <Settings className="w-4 h-4 text-primary" />
-            <span className="text-foreground">Settings</span>
-          </Button>
-          <Separator className="bg-border/50" />
+          {/* <Button */}
+          {/*   onClick={() => { */}
+          {/*     onThemeToggle(); */}
+          {/*     onToggle(); */}
+          {/*   }} */}
+          {/*   className="w-full flex items-center gap-3 px-3 py-2 text-sm brand-hover rounded transition-colors justify-start" */}
+          {/*   variant="ghost" */}
+          {/* > */}
+          {/*   {isDarkMode ? ( */}
+          {/*     <Sun className="w-4 h-4 text-primary" /> */}
+          {/*   ) : ( */}
+          {/*     <Moon className="w-4 h-4 text-primary" /> */}
+          {/*   )} */}
+          {/*   <span className="text-foreground"> */}
+          {/*     {isDarkMode ? "Light mode" : "Dark mode"} */}
+          {/*   </span> */}
+          {/* </Button> */}
+          {/* <Separator className="bg-border/50" /> */}
+          {/* <Button */}
+          {/*   onClick={() => { */}
+          {/*     onToggle(); */}
+          {/*     // Handle settings */}
+          {/*   }} */}
+          {/*   className="w-full flex items-center gap-3 px-3 py-2 text-sm brand-hover rounded transition-colors justify-start" */}
+          {/*   variant="ghost" */}
+          {/* > */}
+          {/*   <Settings className="w-4 h-4 text-primary" /> */}
+          {/*   <span className="text-foreground">Settings</span> */}
+          {/* </Button> */}
+          {/* <Separator className="bg-border/50" /> */}
           <Button
             onClick={async () => {
               await signOut();
