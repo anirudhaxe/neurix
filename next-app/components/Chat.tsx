@@ -9,26 +9,17 @@ import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/trpc/client";
-import { authClient } from "@/lib/auth/auth-client";
 
 export default function Chat({
   id,
   initialMessages,
+  userId,
 }: {
-  id: string;
+  id: string; // chatId
   initialMessages?: UIMessage[];
+  userId: string;
 }) {
   const router = useRouter();
-
-  const {
-    isPending: isSessionFetchPending,
-    data,
-    error: isSessionFetchingErrored,
-  } = authClient.useSession();
-
-  if (isSessionFetchingErrored) {
-    router.push("sign-in");
-  }
 
   const isChatTitleGenerated = useRef(
     initialMessages ? initialMessages?.length >= 2 : false,
@@ -45,7 +36,7 @@ export default function Chat({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: threads = [], refetch } = trpc.chat.getChats.useQuery({
-    userId: data?.user.id || "",
+    userId,
   });
 
   const { messages, sendMessage, status, stop } = useChat({
@@ -60,14 +51,15 @@ export default function Chat({
     onFinish: async ({ messages: newMessages }) => {
       if (isChatTitleGenerated.current === false && newMessages?.length >= 2) {
         generateChatTitle({
-          userId: data?.user.id || "",
+          userId,
           messages: newMessages,
           chatId: id,
         });
         isChatTitleGenerated.current = true;
+      } else {
+        // await trpcUtils.chat.getChats.invalidate({ userId });
+        await refetch();
       }
-      // await trpcUtils.chat.getChats.invalidate({ userId: data?.user.id });
-      await refetch();
     },
   });
 
@@ -120,23 +112,12 @@ export default function Chat({
     // TODO: implement theme toggle
   };
 
-  if (isSessionFetchPending) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading chat...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-screen bg-linear-to-br from-background via-background to-card">
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex">
         <Sidebar
-          userId={data?.user.id || ""}
+          userId={userId}
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           onNewChat={handleSidebarNewChat}
@@ -180,7 +161,7 @@ export default function Chat({
         }`}
       >
         <Sidebar
-          userId={data?.user.id || ""}
+          userId={userId}
           isCollapsed={false}
           onToggle={() => {}} // No-op for mobile - close by clicking outside
           onNewChat={handleSidebarNewChat}

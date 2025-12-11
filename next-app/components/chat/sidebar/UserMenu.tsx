@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight, User, Moon, Sun, Settings, LogOut } from "lucide-react";
 import { useRef, useEffect } from "react";
+import { useSession, signOut } from "@/lib/auth/auth-client";
 
 interface UserMenuProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export function UserMenu({
   onThemeToggle,
 }: UserMenuProps) {
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const { data: session, isPending } = useSession();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -33,11 +35,11 @@ export function UserMenu({
     };
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("click", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [isOpen, onToggle]);
 
@@ -58,8 +60,21 @@ export function UserMenu({
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 text-left transition-all duration-300 ease-in-out opacity-100 w-auto">
-          <div className="text-sm font-medium text-foreground">John Doe</div>
-          <div className="text-xs text-muted-foreground">john@example.com</div>
+          {isPending ? (
+            <>
+              <div className="animate-pulse bg-muted rounded h-4 w-16 mb-1"></div>
+              <div className="animate-pulse bg-muted rounded h-3 w-24"></div>
+            </>
+          ) : (
+            <>
+              <div className="text-sm font-medium text-foreground">
+                {session?.user?.name || ""}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {session?.user?.email || ""}
+              </div>
+            </>
+          )}
         </div>
         <ChevronRight
           className={`h-4 text-primary transition-all duration-300 opacity-100 w-auto ${isOpen ? "rotate-90" : ""}`}
@@ -67,7 +82,7 @@ export function UserMenu({
       </Button>
 
       {isOpen && (
-        <Card className="absolute bottom-full left-3 right-3 mb-2 bg-card border border-border rounded-lg brand-shadow-lg overflow-hidden animate-in slide-in-from-bottom-2 fade-in-0 duration-200">
+        <Card className="mt-2 bg-card border border-border rounded-lg brand-shadow-lg overflow-hidden animate-in slide-in-from-bottom-2 fade-in-0 duration-200">
           <Button
             onClick={() => {
               onThemeToggle();
@@ -99,9 +114,9 @@ export function UserMenu({
           </Button>
           <Separator className="bg-border/50" />
           <Button
-            onClick={() => {
+            onClick={async () => {
+              await signOut();
               onToggle();
-              // Handle logout
             }}
             className="w-full flex items-center gap-3 px-3 py-2 text-sm brand-hover rounded transition-colors text-destructive justify-start"
             variant="ghost"
@@ -114,4 +129,3 @@ export function UserMenu({
     </div>
   );
 }
-
