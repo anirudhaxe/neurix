@@ -32,4 +32,3 @@ export interface ScanPageResult {
   text: string;
   tab: ChromeTab;
 }
-
