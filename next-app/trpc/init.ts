@@ -15,7 +15,7 @@ export const createTRPCContext = cache(async () => {
 
   return {
     isAuthenticated: !!session?.session,
-    userId: session?.user.id || null, // null if not authenticated
+    userId: session?.user?.id ?? null, // null if not authenticated
   };
 });
 

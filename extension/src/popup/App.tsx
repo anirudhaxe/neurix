@@ -67,7 +67,7 @@ export default function App() {
     );
   }
 
-  if (!data?.user.id) {
+  if (!data?.user?.id) {
     return <Login />;
   }
 

@@ -3,7 +3,7 @@ import auth from "@/lib/auth";
 
 const handler = toNextJsHandler(auth);
 
-const allowedOrigins = [process.env.BETTER_AUTH_URL];
+const allowedOrigins = [process.env.BETTER_AUTH_URL].filter(Boolean);
 
 function withCors(handlerFn: (req: Request) => Promise<Response>) {
   return async (req: Request) => {
@@ -22,7 +22,7 @@ function withCors(handlerFn: (req: Request) => Promise<Response>) {
 
     response.headers.set(
       "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, OPTIONS",
+      "GET, POST, PUT, PATCH, DELETE, OPTIONS",
     );
     response.headers.set(
       "Access-Control-Allow-Headers",
@@ -55,7 +55,7 @@ export const OPTIONS = async (req: Request) => {
 
   response.headers.set(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS",
   );
   response.headers.set(
     "Access-Control-Allow-Headers",
