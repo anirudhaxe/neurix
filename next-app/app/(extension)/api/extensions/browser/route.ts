@@ -3,11 +3,19 @@ import { job } from "@/db/schema";
 import { generateTextCall } from "@/lib/ai/llm";
 import { jobQueue } from "@/queues";
 import { handleApiError } from "@/lib/utils";
+import auth from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function POST(request: Request) {
   try {
-    // pass userId dynamically once auth is implemented
-    const userId = "TEMPID9090";
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session || !session?.user?.id)
+      return Response.json({ error: "Authetication failed" }, { status: 401 });
+
+    const userId = session.user.id;
 
     // Validate request body
     const data = await request.json();
@@ -45,7 +53,6 @@ export async function POST(request: Request) {
       .insert(job)
       .values({
         userId,
-        // TODO: create a random placeholder title here
         name: generatedTitle || "PLACEHOLDER TITLE",
         status: "QUEUED",
         type: "TEXT",

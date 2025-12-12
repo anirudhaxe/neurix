@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "../init";
 import { chatRouteController } from "./routeControllers/chat";
+import { jobRouteController } from "./routeControllers/job";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { chatRouteController } from "./routeControllers/chat";
  */
 export const appRouter = createTRPCRouter({
   chat: chatRouteController,
+  job: jobRouteController,
 });
 
 // Export type definition of API
