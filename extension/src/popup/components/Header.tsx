@@ -1,4 +1,6 @@
+import { signOut } from "@/lib/auth/auth-client";
 import type { HeaderProps } from "../types";
+import { LogOut } from "lucide-react";
 
 export default function Header({ onProfileClick }: HeaderProps) {
   return (
@@ -9,28 +11,36 @@ export default function Header({ onProfileClick }: HeaderProps) {
           <img src="/dark-logo.png" alt="OpenContext" className="h-7 w-auto" />
         </div>
 
-        {/* Profile icon on top right */}
-        <button
-          onClick={onProfileClick}
-          className="p-1.5 rounded-lg hover:bg-[rgba(77,181,207,0.1)] transition-colors"
-          aria-label="Profile"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        {/* Buttons on top right */}
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={onProfileClick}
+            className="p-1.5 rounded-lg hover:bg-[rgba(77,181,207,0.1)] transition-colors"
+            aria-label="Profile"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            />
-          </svg>
-        </button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+          </button>
+          <button
+            onClick={() => signOut()}
+            className="p-1.5 rounded-lg hover:bg-[rgba(77,181,207,0.1)] transition-colors"
+            aria-label="Logout"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </header>
   );
 }
-

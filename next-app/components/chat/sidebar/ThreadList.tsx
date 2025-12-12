@@ -64,22 +64,22 @@ export function ThreadList({
                 </div>
               </div>
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`p-1 rounded transition-all duration-200 cursor-pointer hover:scale-110 h-6 w-6 ${
-                    selectedThreadId === thread.id
-                      ? "hover:bg-white/20 text-primary-foreground"
-                      : "brand-hover text-muted-foreground hover:text-foreground"
-                  }`}
-                  title="Edit"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // Handle edit
-                  }}
-                >
-                  <Edit3 className="w-3 h-3" />
-                </Button>
+                {/* <Button */}
+                {/*   variant="ghost" */}
+                {/*   size="icon" */}
+                {/*   className={`p-1 rounded transition-all duration-200 cursor-pointer hover:scale-110 h-6 w-6 ${ */}
+                {/*     selectedThreadId === thread.id */}
+                {/*       ? "hover:bg-white/20 text-primary-foreground" */}
+                {/*       : "brand-hover text-muted-foreground hover:text-foreground" */}
+                {/*   }`} */}
+                {/*   title="Edit" */}
+                {/*   onClick={(e) => { */}
+                {/*     e.stopPropagation(); */}
+                {/*     // Handle edit */}
+                {/*   }} */}
+                {/* > */}
+                {/*   <Edit3 className="w-3 h-3" /> */}
+                {/* </Button> */}
                 <Button
                   variant="ghost"
                   size="icon"
