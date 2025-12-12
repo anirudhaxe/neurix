@@ -12,6 +12,7 @@ import {
 } from "@/db/chat";
 import { generateTextCall } from "@/lib/ai/llm";
 import { handleTRPCProcedureError } from "@/lib/utils";
+import { TRPCError } from "@trpc/server";
 
 // Zod schema for UIMessage
 const UIMessageSchema = z.object({
@@ -124,10 +125,16 @@ export const chatRouteController = createTRPCRouter({
           chatId,
         });
 
-        return {
-          id: result[0]?.id || null,
-          status: "ok",
-        };
+        if (result[0]?.id) {
+          return {
+            id: result[0].id,
+          };
+        } else {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "An error occured while deleting chat",
+          });
+        }
       } catch (error) {
         handleTRPCProcedureError(error, "TRPC MUTATION /deleteChat");
       }
