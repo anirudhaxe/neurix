@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  publicProcedure,
-  // protectedProcedure,
-  createTRPCRouter,
-} from "@/trpc/init";
+import { protectedProcedure, createTRPCRouter } from "@/trpc/init";
 
 import {
   createChat,
@@ -25,35 +21,33 @@ const UIMessageSchema = z.object({
 });
 
 export const chatRouteController = createTRPCRouter({
-  getChats: publicProcedure
-    .input(z.object({ userId: z.string() }))
-    .query(async ({ input }) => {
-      try {
-        const result = await getChatsAndPreviewMessageFromDb({
-          userId: input.userId,
-        });
+  getChats: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const result = await getChatsAndPreviewMessageFromDb({
+        userId: ctx.userId,
+      });
 
-        return result.map((chat) => {
-          let preview = "";
+      return result.map((chat) => {
+        let preview = "";
 
-          if (Array.isArray(chat.latestMessage?.parts)) {
-            preview = chat.latestMessage?.parts[0]?.text || "";
-          }
+        if (Array.isArray(chat.latestMessage?.parts)) {
+          preview = chat.latestMessage?.parts[0]?.text || "";
+        }
 
-          return {
-            id: chat.chatId,
-            title: chat.title,
-            preview,
-            // TODO: implement this type stamp text
-            // timestamp: chat.updatedAt,
-            timestamp: "1 day ago",
-          };
-        });
-      } catch (error) {
-        handleTRPCProcedureError(error, "TRPC QUERY /getChats");
-      }
-    }),
-  loadChat: publicProcedure
+        return {
+          id: chat.chatId,
+          title: chat.title,
+          preview,
+          // TODO: implement this type stamp text
+          // timestamp: chat.updatedAt,
+          timestamp: "1 day ago",
+        };
+      });
+    } catch (error) {
+      handleTRPCProcedureError(error, "TRPC QUERY /getChats");
+    }
+  }),
+  loadChat: protectedProcedure
     .input(z.object({ chatId: z.string() }))
     .query(async ({ input }) => {
       try {
@@ -81,15 +75,14 @@ export const chatRouteController = createTRPCRouter({
         handleTRPCProcedureError(error, "TRPC QUERY /loadChat");
       }
     }),
-  saveChat: publicProcedure
+  saveChat: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
         chatId: z.string(),
         messages: z.array(UIMessageSchema),
       }),
     )
-    .mutation(async ({ input: { userId, chatId, messages } }) => {
+    .mutation(async ({ input: { chatId, messages }, ctx }) => {
       try {
         if (messages.length > 0) {
           let chatDbId = "";
@@ -98,7 +91,7 @@ export const chatRouteController = createTRPCRouter({
           // if no existing chat found, create a new chat
           if (res.length === 0) {
             const result = await createChat({
-              userId,
+              userId: ctx.userId,
               chatId,
               // title: generatedTitle?.text || "Untitled Chat",
               title: "Untitled Chat",
@@ -122,12 +115,12 @@ export const chatRouteController = createTRPCRouter({
         handleTRPCProcedureError(error, "TRPC MUTATION /saveChat");
       }
     }),
-  deleteChat: publicProcedure
-    .input(z.object({ userId: z.string(), chatId: z.string() }))
-    .mutation(async ({ input: { userId, chatId } }) => {
+  deleteChat: protectedProcedure
+    .input(z.object({ chatId: z.string() }))
+    .mutation(async ({ input: { chatId }, ctx }) => {
       try {
         const result = await deleteChatFromDb({
-          userId,
+          userId: ctx.userId,
           chatId,
         });
 
@@ -139,15 +132,14 @@ export const chatRouteController = createTRPCRouter({
         handleTRPCProcedureError(error, "TRPC MUTATION /deleteChat");
       }
     }),
-  generateChatTitle: publicProcedure
+  generateChatTitle: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
         chatId: z.string(),
         messages: z.array(UIMessageSchema),
       }),
     )
-    .mutation(async ({ input: { userId, chatId, messages } }) => {
+    .mutation(async ({ input: { chatId, messages }, ctx }) => {
       try {
         const result = await generateTextCall({
           system:
@@ -156,7 +148,7 @@ export const chatRouteController = createTRPCRouter({
         });
 
         await updateChatTitleInDb({
-          userId,
+          userId: ctx.userId,
           chatId,
           title: result.text,
         });

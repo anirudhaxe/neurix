@@ -1,20 +1,21 @@
+import auth from "@/lib/auth";
+import { headers } from "next/headers";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { cache } from "react";
 import superjson from "superjson";
 
 // Create tRPC context
 export const createTRPCContext = cache(async () => {
-  // DUMMY AUTH: In production, get this from cookies/headers/session
+  // Get this from cookies/headers/session
   // Example: const session = await getServerSession();
 
-  // TODO: implement isAuthenticated once auth is implemented
-  // Simulate checking for authentication
-  const isAuthenticated = Math.random() > 0.5; // Dummy check
-  const userId = isAuthenticated ? "user_123" : null;
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   return {
-    userId, // null if not authenticated
-    isAuthenticated,
+    isAuthenticated: !!session?.session,
+    userId: session?.user?.id ?? null, // null if not authenticated
   };
 });
 

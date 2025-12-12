@@ -42,7 +42,6 @@ export async function POST(req: Request) {
     }),
     onFinish: async ({ messages }) => {
       await trpc.chat.saveChat({
-        userId: session.user.id,
         chatId: id,
         messages,
       });

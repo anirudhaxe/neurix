@@ -7,7 +7,6 @@ import { UserMenu } from "./UserMenu";
 import { Thread } from "../types";
 
 interface SidebarProps {
-  userId: string;
   isCollapsed: boolean;
   onToggle: () => void;
   onNewChat: () => void;
@@ -19,17 +18,10 @@ interface SidebarProps {
   isDarkMode: boolean;
   onThemeToggle: () => void;
   isMobile?: boolean;
-  handleChatDeletion: ({
-    userId,
-    chatId,
-  }: {
-    userId: string;
-    chatId: string;
-  }) => void;
+  handleChatDeletion: ({ chatId }: { chatId: string }) => void;
 }
 
 export function Sidebar({
-  userId,
   isCollapsed,
   onToggle,
   onNewChat,
@@ -67,7 +59,6 @@ export function Sidebar({
       {/* Thread List */}
       <div className="flex-1 overflow-y-auto transition-all duration-300 ease-in-out">
         <ThreadList
-          userId={userId}
           threads={threads}
           selectedThreadId={selectedThreadId}
           onThreadSelect={onThreadSelect}

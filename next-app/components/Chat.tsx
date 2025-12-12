@@ -13,11 +13,9 @@ import { trpc } from "@/trpc/client";
 export default function Chat({
   id,
   initialMessages,
-  userId,
 }: {
   id: string; // chatId
   initialMessages?: UIMessage[];
-  userId: string;
 }) {
   const router = useRouter();
 
@@ -35,9 +33,7 @@ export default function Chat({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { data: threads = [], refetch } = trpc.chat.getChats.useQuery({
-    userId,
-  });
+  const { data: threads = [], refetch } = trpc.chat.getChats.useQuery();
 
   const { messages, sendMessage, status, stop } = useChat({
     id,
@@ -51,7 +47,6 @@ export default function Chat({
     onFinish: async ({ messages: newMessages }) => {
       if (isChatTitleGenerated.current === false && newMessages?.length >= 2) {
         generateChatTitle({
-          userId,
           messages: newMessages,
           chatId: id,
         });
@@ -77,15 +72,8 @@ export default function Chat({
     },
   );
 
-  const handleChatDeletion = ({
-    userId,
-    chatId,
-  }: {
-    userId: string;
-    chatId: string;
-  }) => {
+  const handleChatDeletion = ({ chatId }: { chatId: string }) => {
     mutateChatDeletion({
-      userId,
       chatId,
     });
   };
@@ -117,7 +105,6 @@ export default function Chat({
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex">
         <Sidebar
-          userId={userId}
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           onNewChat={handleSidebarNewChat}
@@ -161,7 +148,6 @@ export default function Chat({
         }`}
       >
         <Sidebar
-          userId={userId}
           isCollapsed={false}
           onToggle={() => {}} // No-op for mobile - close by clicking outside
           onNewChat={handleSidebarNewChat}
