@@ -67,7 +67,7 @@ export default function App() {
     );
   }
 
-  if (!data?.session.userId) {
+  if (!data?.user.id) {
     return <Login />;
   }
 

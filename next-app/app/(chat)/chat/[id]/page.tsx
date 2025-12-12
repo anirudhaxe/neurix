@@ -23,7 +23,7 @@ export default async function Page({
 
   const initialMessages = await trpc.chat.loadChat({ chatId: id });
 
-  return <Chat id={id} userId={userId} initialMessages={initialMessages} />;
+  return <Chat id={id} initialMessages={initialMessages} />;
 }
 
 // Sample loading.ts
