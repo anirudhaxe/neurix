@@ -1,3 +1,5 @@
+import { SERVER_BASE_URL } from "./lib";
+
 // Background service worker for the extension
 console.log("[CRXJS] Background service worker loaded");
 
@@ -7,7 +9,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
     try {
       // Send to API
       const response = await fetch(
-        "http://localhost:3000/api/extensions/browser",
+        `${SERVER_BASE_URL}/api/extensions/browser`,
         {
           method: "POST",
           headers: {
