@@ -4,12 +4,14 @@ import { useChat } from "@ai-sdk/react";
 import { useState, useRef, useEffect } from "react";
 import { DefaultChatTransport, generateId, UIMessage } from "ai";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
 import { JobsSection } from "./chat/jobs-section";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/trpc/client";
+import { X } from "lucide-react";
 
 export default function Chat({
   id,
@@ -31,6 +33,9 @@ export default function Chat({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [selectedThreadId, setSelectedThreadId] = useState(id);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedJobs, setSelectedJobs] = useState<
+    { jobId: string; jobName: string }[]
+  >([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -191,6 +196,63 @@ export default function Chat({
           <MessageList messages={messages} messagesEndRef={messagesEndRef} />
         </div>
 
+        {/* Selected Jobs Context */}
+        {selectedJobs.length > 0 && (
+          <div className="mx-auto flex w-full max-w-4xl px-2 md:px-4">
+            <div className="rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm p-3 brand-shadow-sm">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Selected Context:
+                  </span>
+                  <Badge variant="secondary" className="text-xs">
+                    {selectedJobs.length}
+                  </Badge>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setSelectedJobs([])}
+                  className="h-6 w-6 text-muted-foreground hover:text-foreground hover:bg-muted/50 p-0"
+                  title="Clear all selected context"
+                >
+                  <X className="size-3" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {selectedJobs.map((job) => (
+                  <Badge
+                    key={job.jobId}
+                    variant="default"
+                    className="text-xs flex items-center gap-1"
+                  >
+                    {(() => {
+                      // show clipped name in the badge
+                      const words = job.jobName.split(" ");
+                      if (words.length <= 3) return job.jobName;
+                      return words.slice(0, 3).join(" ") + "...";
+                    })()}
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() =>
+                        setSelectedJobs((prev) =>
+                          prev.filter(
+                            (selectedJob) => selectedJob.jobId !== job.jobId,
+                          ),
+                        )
+                      }
+                      className="h-3 w-3 p-0 ml-1 hover:bg-primary-foreground/20 rounded-full shrink-0"
+                    >
+                      <X className="size-2" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Input Area */}
         <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl gap-2 border-t border-border/50 bg-linear-to-t from-card via-card/80 to-transparent px-2 pb-3 md:px-4 md:pb-4 pt-2">
           <MultimodalInput
@@ -203,7 +265,10 @@ export default function Chat({
         </div>
 
         {/* Jobs Section */}
-        <JobsSection />
+        <JobsSection
+          selectedJobs={selectedJobs}
+          onJobSelectionChange={setSelectedJobs}
+        />
       </div>
 
       {/* Mobile Sidebar Overlay */}

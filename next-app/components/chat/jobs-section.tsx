@@ -41,8 +41,8 @@ const statusConfig = {
   PROCESSED: {
     icon: CheckCircle,
     color: "text-green-500",
-    bgColor: "bg-green-500/10",
-    borderColor: "border-green-500/20",
+    bgColor: "bg-blue-500/10",
+    borderColor: "border-blue-500/20",
   },
   ERROR: {
     icon: XCircle,
@@ -58,16 +58,29 @@ const statusConfig = {
   },
 };
 
-export function JobsSection() {
+interface SelectedJob {
+  jobId: string;
+  jobName: string;
+}
+
+interface JobsSectionProps {
+  selectedJobs: SelectedJob[];
+  onJobSelectionChange: (selectedJobs: SelectedJob[]) => void;
+}
+
+export function JobsSection({
+  selectedJobs = [],
+  onJobSelectionChange,
+}: JobsSectionProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTypes, setSelectedTypes] = useState<JobType>("TEXT");
-  const [selectedStatuses, setSelectedStatuses] = useState<JobStatus>();
+  const [selectedType, setSelectedType] = useState<JobType>("TEXT");
+  const [selectedStatus, setSelectedStatus] = useState<JobStatus>();
 
   const { data: jobs = [], refetch } = trpc.job.getJobs.useQuery({
     nameSearchQuery: searchQuery,
-    status: selectedStatuses,
-    type: selectedTypes,
+    status: selectedStatus,
+    type: selectedType,
   });
 
   const { mutate: deleteJob } = trpc.job.deleteJob.useMutation({
@@ -85,15 +98,33 @@ export function JobsSection() {
     deleteJob({ jobId });
   };
 
+  const handleJobSelection = (jobId: string, jobName: string) => {
+    const isSelected = selectedJobs.some((job) => job.jobId === jobId);
+    let newSelection: SelectedJob[];
+
+    if (isSelected) {
+      newSelection = selectedJobs.filter((job) => job.jobId !== jobId);
+    } else {
+      newSelection = [...selectedJobs, { jobId, jobName }];
+    }
+
+    if (onJobSelectionChange) {
+      onJobSelectionChange(newSelection);
+    }
+  };
+
   const runningJobsCount = jobs.filter((j) => j.status === "PROCESSING").length;
   const hasRunningJobs = runningJobsCount > 0;
 
+  // Get selected job IDs for easy checking
+  const selectedJobIds = selectedJobs.map((job) => job.jobId);
+
   const toggleTypeFilter = (type: JobType) => {
-    setSelectedTypes(type);
+    setSelectedType(type);
   };
 
   const toggleStatusFilter = (status: JobStatus) => {
-    setSelectedStatuses(status);
+    setSelectedStatus(status);
   };
 
   const formatTimeAgo = (date: Date) => {
@@ -140,9 +171,7 @@ export function JobsSection() {
           <span className="text-sm font-medium text-foreground">
             Select Context
           </span>
-          <Badge variant="secondary" className="text-xs">
-            {jobs.length}
-          </Badge>
+
           {hasRunningJobs && (
             <Badge
               variant="outline"
@@ -192,7 +221,7 @@ export function JobsSection() {
                   <Badge
                     key={type}
                     variant={
-                      selectedTypes.includes(type) ? "default" : "outline"
+                      selectedType.includes(type) ? "default" : "outline"
                     }
                     className="cursor-pointer text-xs transition-all duration-200 hover:scale-105"
                     onClick={() => toggleTypeFilter(type)}
@@ -215,11 +244,11 @@ export function JobsSection() {
                     <Badge
                       key={status}
                       variant={
-                        selectedStatuses === status ? "default" : "outline"
+                        selectedStatus === status ? "default" : "outline"
                       }
                       className={cn(
                         "cursor-pointer text-xs transition-all duration-200 hover:scale-105",
-                        selectedStatuses === status ? "" : config.color,
+                        selectedStatus === status ? "" : config.color,
                       )}
                       onClick={() => toggleStatusFilter(status as JobStatus)}
                     >
@@ -243,40 +272,74 @@ export function JobsSection() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {jobs.map((job, index) => {
                   const StatusIcon = statusConfig[job.status].icon;
+                  const isSelected = selectedJobIds.includes(job.id);
                   return (
                     <div
                       key={job.id}
                       className={cn(
-                        "group flex flex-col gap-2 rounded-lg border p-3 transition-all duration-200 hover:bg-card/80 hover:border-primary/30 animate-in fade-in slide-in-from-bottom-2 h-full",
+                        "group flex flex-col gap-2 rounded-lg border p-3 transition-all duration-200 hover:bg-card/80 hover:border-primary/30 animate-in fade-in slide-in-from-bottom-2 h-full cursor-pointer",
                         statusConfig[job.status].borderColor,
                         statusConfig[job.status].bgColor,
+                        isSelected &&
+                          "border-primary bg-primary/10 ring-2 ring-primary/20",
                       )}
                       style={{ animationDelay: `${index * 50}ms` }}
+                      onClick={() => handleJobSelection(job.id, job.name)}
                     >
-                      {/* Header with Status Icon and Actions */}
+                      {/* Header with Status Icon, Selection Indicator, and Actions */}
                       <div className="flex items-start justify-between gap-2">
-                        <div
-                          className={cn(
-                            "flex size-6 items-center justify-center rounded-full transition-all duration-300 flex-shrink-0",
-                            statusConfig[job.status].bgColor,
-                            job.status === "PROCESSING" && "animate-spin",
-                          )}
-                        >
-                          <StatusIcon
+                        <div className="flex items-center gap-2">
+                          {/* Selection Checkbox */}
+                          <div
                             className={cn(
-                              "size-3",
-                              statusConfig[job.status].color,
+                              "flex size-5 items-center justify-center rounded border transition-all duration-200 shrink-0",
+                              isSelected
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : "border-border bg-card hover:border-primary/50",
                             )}
-                          />
+                          >
+                            {isSelected && (
+                              <svg
+                                className="size-3"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </div>
+
+                          {/* Status Icon */}
+                          <div
+                            className={cn(
+                              "flex size-6 items-center justify-center rounded-full transition-all duration-300 shrink-0",
+                              statusConfig[job.status].bgColor,
+                              job.status === "PROCESSING" && "animate-spin",
+                            )}
+                          >
+                            <StatusIcon
+                              className={cn(
+                                "size-3",
+                                statusConfig[job.status].color,
+                              )}
+                            />
+                          </div>
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0">
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shrink-0">
                           {job.status === "ERROR" && (
                             <Button
                               variant="ghost"
                               size="icon-sm"
-                              onClick={() => handleRetry(job.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRetry(job.id);
+                              }}
                               className="h-6 w-6 text-blue-500 hover:text-blue-600 hover:bg-blue-500/10 p-0"
                               title="Retry job"
                             >
@@ -286,7 +349,10 @@ export function JobsSection() {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            onClick={() => handleDelete(job.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(job.id);
+                            }}
                             className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-500/10 p-0"
                             title="Delete job"
                           >
@@ -322,4 +388,3 @@ export function JobsSection() {
     </div>
   );
 }
-
