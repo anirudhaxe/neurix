@@ -6,7 +6,11 @@ import auth from "@/lib/auth";
 import { headers } from "next/headers";
 
 export async function POST(req: Request) {
-  const { message, id }: { message: UIMessage; id: string } = await req.json();
+  const {
+    message,
+    id,
+    jobIds = [],
+  }: { message: UIMessage; id: string; jobIds?: string[] } = await req.json();
 
   const previousMessages = await trpc.chat.loadChat({ chatId: id });
 
@@ -26,6 +30,7 @@ export async function POST(req: Request) {
     model: "kwaipilot/kat-coder-pro:free",
     messages,
     userId: session.user.id,
+    jobIds,
     stopWhen: 5,
     tools: {
       weather: weatherTool(),

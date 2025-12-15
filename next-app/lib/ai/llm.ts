@@ -21,7 +21,7 @@ async function llmCall({
   model,
   messages,
   userId,
-  jobId,
+  jobIds,
   stopWhen,
   tools,
   isRagCall = false,
@@ -29,7 +29,7 @@ async function llmCall({
   model: string;
   messages: UIMessage[];
   userId: string;
-  jobId?: string;
+  jobIds: string[];
   stopWhen: number;
   tools?: Record<string, any>;
   isRagCall?: boolean;
@@ -44,8 +44,8 @@ async function llmCall({
       : openrouter(model),
     providerOptions: {
       conditionalRagMiddleware: {
-        userId: userId,
-        jobId: jobId || "",
+        userId,
+        jobIds,
       },
     },
     messages: convertToModelMessages(messages),

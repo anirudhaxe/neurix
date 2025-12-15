@@ -26,6 +26,8 @@ export default function Chat({
     initialMessages ? initialMessages?.length >= 2 : false,
   );
 
+  const selectedJobRef = useRef<{ jobId: string; jobName: string }[]>([]);
+
   // const trpcUtils = trpc.useUtils();
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -37,6 +39,11 @@ export default function Chat({
     { jobId: string; jobName: string }[]
   >([]);
 
+  // track ref between re-renders
+  useEffect(() => {
+    selectedJobRef.current = selectedJobs;
+  }, [selectedJobs]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: threads = [], refetch } = trpc.chat.getChats.useQuery();
@@ -47,7 +54,13 @@ export default function Chat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
       prepareSendMessagesRequest({ messages, id }) {
-        return { body: { message: messages[messages.length - 1], id } };
+        return {
+          body: {
+            message: messages[messages.length - 1],
+            id,
+            jobIds: selectedJobRef.current.map((job) => job.jobId),
+          },
+        };
       },
     }),
     onFinish: async ({ messages: newMessages }) => {

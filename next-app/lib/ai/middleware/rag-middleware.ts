@@ -12,7 +12,8 @@ export const conditionalRagMiddleware: LanguageModelV2Middleware = {
     // return if providerOptions not provided (atleast userId is mandatory)
     if (!providerOptions) return params;
 
-    const { userId, jobId } = providerOptions.conditionalRagMiddleware;
+    const jobIds = providerOptions.conditionalRagMiddleware.jobIds as string[];
+    const userId = providerOptions.conditionalRagMiddleware.userId as string;
 
     const recentMessage = messages.pop();
 
@@ -50,12 +51,14 @@ export const conditionalRagMiddleware: LanguageModelV2Middleware = {
     const vectorQueryFilter = {
       must: [
         {
-          key: "userId",
+          key: "metadata.userId",
           match: {
             value: userId,
           },
         },
-        ...(jobId ? [{ key: "jobId", match: { value: jobId } }] : []), // optional jobId filter
+        ...(jobIds?.length
+          ? [{ key: "metadata.jobId", match: { any: jobIds } }]
+          : []), // optional jobId filter
       ],
     };
 
