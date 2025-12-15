@@ -6,6 +6,17 @@ import { handleApiError } from "@/lib/utils";
 import auth from "@/lib/auth";
 import { headers } from "next/headers";
 
+const withCors = (response: Response) => {
+  // Set CORS headers (origin, methods, headers)
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization",
+  );
+  return response;
+};
+
 export async function POST(request: Request) {
   try {
     const session = await auth.api.getSession({
@@ -13,7 +24,9 @@ export async function POST(request: Request) {
     });
 
     if (!session || !session?.user?.id)
-      return Response.json({ error: "Authetication failed" }, { status: 401 });
+      return withCors(
+        Response.json({ error: "Authetication failed" }, { status: 401 }),
+      );
 
     const userId = session.user.id;
 
@@ -21,12 +34,14 @@ export async function POST(request: Request) {
     const data = await request.json();
 
     if (!data.text || typeof data.text !== "string") {
-      return Response.json(
-        {
-          error:
-            "Invalid request: 'text' field is required and must be a string",
-        },
-        { status: 400 },
+      return withCors(
+        Response.json(
+          {
+            error:
+              "Invalid request: 'text' field is required and must be a string",
+          },
+          { status: 400 },
+        ),
       );
     }
 
@@ -48,6 +63,7 @@ export async function POST(request: Request) {
         ),
       );
 
+    // TODO: move this into a separate db function
     // Insert job record into database
     const result = await db
       .insert(job)
@@ -62,7 +78,9 @@ export async function POST(request: Request) {
     const jobId = result[0]?.jobId;
 
     if (!jobId)
-      return Response.json({ error: "Failed to create job" }, { status: 500 });
+      return withCors(
+        Response.json({ error: "Failed to create job" }, { status: 500 }),
+      );
 
     // Add job to queue
     await jobQueue.add(jobId, {
@@ -78,12 +96,7 @@ export async function POST(request: Request) {
       message: "Job created successfully",
     });
 
-    // Set CORS headers (origin, methods, headers)
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-
-    return response;
+    return withCors(response);
   } catch (error) {
     return handleApiError(error, "POST /api/extensions/browser");
   }
@@ -94,6 +107,9 @@ export async function OPTIONS() {
   const response = new Response(null, { status: 200 });
   response.headers.set("Access-Control-Allow-Origin", "*");
   response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-  response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization",
+  );
   return response;
 }

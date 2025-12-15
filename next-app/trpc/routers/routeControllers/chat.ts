@@ -131,8 +131,8 @@ export const chatRouteController = createTRPCRouter({
           };
         } else {
           throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "An error occured while deleting chat",
+            code: "NOT_FOUND",
+            message: "An error occurred while deleting chat",
           });
         }
       } catch (error) {

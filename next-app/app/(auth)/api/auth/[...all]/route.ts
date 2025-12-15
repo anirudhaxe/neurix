@@ -5,6 +5,7 @@ const handler = toNextJsHandler(auth);
 
 const allowedOrigins = [process.env.BETTER_AUTH_URL].filter(Boolean);
 
+// Enable cors for TRPC endpoints
 function withCors(handlerFn: (req: Request) => Promise<Response>) {
   return async (req: Request) => {
     const origin = req.headers.get("origin");
