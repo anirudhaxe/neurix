@@ -37,6 +37,11 @@ export const job = pgTable("job", {
   name: text("name").notNull(),
   status: jobStatus().notNull(),
   type: jobType().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // chat table

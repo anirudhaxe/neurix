@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
+import { JobsSection } from "./chat/jobs-section";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/trpc/client";
 
@@ -200,6 +201,9 @@ export default function Chat({
             sendMessage={sendMessage}
           />
         </div>
+
+        {/* Jobs Section */}
+        <JobsSection />
       </div>
 
       {/* Mobile Sidebar Overlay */}
