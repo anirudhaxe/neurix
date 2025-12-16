@@ -149,9 +149,10 @@ export function JobsSection({
         variant="ghost"
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          "group flex w-full items-center justify-between gap-2 rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm p-3 transition-all duration-200 hover:border-primary/50 hover:bg-card/80 brand-shadow-sm",
+          "group flex w-full items-center justify-between gap-2 rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm p-3 transition-all duration-200 hover:border-primary/50 hover:bg-card/80 brand-shadow-sm cursor-pointer",
           hasRunningJobs &&
             "border-blue-500/30 bg-blue-500/5 hover:border-blue-500/50 hover:bg-blue-500/10",
+          isExpanded && "border-primary/50",
         )}
       >
         <div className="flex items-center gap-2">

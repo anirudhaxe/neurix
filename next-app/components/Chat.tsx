@@ -145,7 +145,7 @@ export default function Chat({
           onClick={() => setIsSidebarCollapsed(false)}
           variant="ghost"
           size="icon"
-          className="hidden lg:flex absolute left-4 top-4 z-10 p-2 brand-hover rounded-lg transition-all duration-200 hover:scale-105 brand-shadow-sm brand-glass border border-border/50"
+          className="hidden lg:flex absolute left-4 top-4 z-10 p-2 brand-hover rounded-lg transition-all duration-200 hover:scale-105 brand-shadow-sm brand-glass border border-border/50 cursor-pointer"
           title="Expand sidebar"
         >
           <svg

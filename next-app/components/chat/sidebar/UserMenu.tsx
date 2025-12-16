@@ -50,7 +50,7 @@ export function UserMenu({
     >
       <Button
         onClick={onToggle}
-        className="w-full flex items-center gap-3 p-2 brand-hover rounded-lg transition-all duration-300 ease-in-out"
+        className="w-full flex items-center gap-3 p-2 brand-hover rounded-lg transition-all duration-300 ease-in-out cursor-pointer"
         variant="ghost"
         title="User menu"
       >
