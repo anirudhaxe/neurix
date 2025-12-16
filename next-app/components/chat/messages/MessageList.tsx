@@ -14,28 +14,30 @@ interface MessageListProps {
 export function MessageList({ messages, messagesEndRef }: MessageListProps) {
   if (messages.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <Card className="w-12 h-12 rounded-full brand-gradient flex items-center justify-center mb-4 brand-shadow animate-pulse">
-          <Image
-            src="/logo.png"
-            alt="opencontext-logo"
-            width={25}
-            height={25}
-          />
-        </Card>
-        <h2 className="text-xl font-semibold mb-2 bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-          Start a conversation
-        </h2>
-        <p className="text-muted-foreground max-w-md">
-          Ask me anything! I can help you with questions, tasks, and provide
-          information on various topics.
-        </p>
-      </div>
+      <ScrollArea className="h-full w-full">
+        <div className="flex flex-col items-center justify-center h-full text-center p-8">
+          <Card className="w-12 h-12 rounded-full brand-gradient flex items-center justify-center mb-4 brand-shadow animate-pulse">
+            <Image
+              src="/logo.png"
+              alt="opencontext-logo"
+              width={25}
+              height={25}
+            />
+          </Card>
+          <h2 className="text-xl font-semibold mb-2 bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+            Start a conversation
+          </h2>
+          <p className="text-muted-foreground max-w-md">
+            Ask me anything! I can help you with questions, tasks, and provide
+            information on various topics.
+          </p>
+        </div>
+      </ScrollArea>
     );
   }
 
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className="h-full w-full">
       <div className="divide-y divide-border/30">
         {messages.map((message) => (
           <Message key={message.id} message={message} />

@@ -183,7 +183,7 @@ export default function Chat({
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 relative">
+      <div className="flex-1 flex flex-col min-w-0 relative h-full overflow-hidden">
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center p-4 border-b border-border/50 bg-card/50 backdrop-blur-sm">
           <Button
@@ -205,7 +205,7 @@ export default function Chat({
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden relative">
           <MessageList messages={messages} messagesEndRef={messagesEndRef} />
         </div>
 
@@ -267,7 +267,7 @@ export default function Chat({
         )}
 
         {/* Input Area */}
-        <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl gap-2 border-t border-border/50 bg-linear-to-t from-card via-card/80 to-transparent px-2 pb-3 md:px-4 md:pb-4 pt-2">
+        <div className="relative z-10 mx-auto flex w-full max-w-4xl gap-2 border-t border-border/50 bg-linear-to-t from-card via-card/80 to-transparent px-2 pb-3 md:px-4 md:pb-4 pt-2">
           <MultimodalInput
             input={input}
             setInput={setInput}
