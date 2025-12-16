@@ -25,7 +25,7 @@ export function SidebarHeader({
             variant="ghost"
             size="icon"
             onClick={onToggle}
-            className="p-1 brand-hover rounded-lg transition-all duration-200 hover:scale-105"
+            className="p-1 brand-hover rounded-lg transition-all duration-200 hover:scale-105 cursor-pointer"
             title="Collapse sidebar"
           >
             <svg
@@ -43,7 +43,7 @@ export function SidebarHeader({
 
       <Button
         onClick={onNewChat}
-        className="w-full flex items-center gap-3 px-3 py-2 text-sm border border-border/50 rounded-lg brand-gradient text-primary-foreground hover:brand-gradient-dark transition-all duration-300 ease-in-out brand-shadow-sm hover:brand-shadow"
+        className="w-full flex items-center gap-3 px-3 py-2 text-sm border border-border/50 rounded-lg brand-gradient text-primary-foreground hover:brand-gradient-dark transition-all duration-300 ease-in-out brand-shadow-sm hover:brand-shadow cursor-pointer"
         variant="default"
       >
         <Plus className="w-4 h-4 transition-transform duration-200 hover:scale-110" />
@@ -52,4 +52,3 @@ export function SidebarHeader({
     </div>
   );
 }
-

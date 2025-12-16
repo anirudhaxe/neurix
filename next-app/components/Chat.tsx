@@ -4,11 +4,14 @@ import { useChat } from "@ai-sdk/react";
 import { useState, useRef, useEffect } from "react";
 import { DefaultChatTransport, generateId, UIMessage } from "ai";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Sidebar } from "./chat/sidebar";
 import { MessageList } from "./chat/messages";
 import { MultimodalInput } from "./chat/multimodal-input";
+import { JobsSection } from "./chat/jobs-section";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/trpc/client";
+import { X } from "lucide-react";
 
 export default function Chat({
   id,
@@ -23,6 +26,8 @@ export default function Chat({
     initialMessages ? initialMessages?.length >= 2 : false,
   );
 
+  const selectedJobRef = useRef<{ jobId: string; jobName: string }[]>([]);
+
   // const trpcUtils = trpc.useUtils();
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -30,6 +35,14 @@ export default function Chat({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [selectedThreadId, setSelectedThreadId] = useState(id);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedJobs, setSelectedJobs] = useState<
+    { jobId: string; jobName: string }[]
+  >([]);
+
+  // track ref between re-renders
+  useEffect(() => {
+    selectedJobRef.current = selectedJobs;
+  }, [selectedJobs]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -41,7 +54,13 @@ export default function Chat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
       prepareSendMessagesRequest({ messages, id }) {
-        return { body: { message: messages[messages.length - 1], id } };
+        return {
+          body: {
+            message: messages[messages.length - 1],
+            id,
+            jobIds: selectedJobRef.current.map((job) => job.jobId),
+          },
+        };
       },
     }),
     onFinish: async ({ messages: newMessages }) => {
@@ -126,7 +145,7 @@ export default function Chat({
           onClick={() => setIsSidebarCollapsed(false)}
           variant="ghost"
           size="icon"
-          className="hidden lg:flex absolute left-4 top-4 z-10 p-2 brand-hover rounded-lg transition-all duration-200 hover:scale-105 brand-shadow-sm brand-glass border border-border/50"
+          className="hidden lg:flex absolute left-4 top-4 z-10 p-2 brand-hover rounded-lg transition-all duration-200 hover:scale-105 brand-shadow-sm brand-glass border border-border/50 cursor-pointer"
           title="Expand sidebar"
         >
           <svg
@@ -164,7 +183,7 @@ export default function Chat({
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 relative">
+      <div className="flex-1 flex flex-col min-w-0 relative h-full overflow-hidden">
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center p-4 border-b border-border/50 bg-card/50 backdrop-blur-sm">
           <Button
@@ -186,12 +205,69 @@ export default function Chat({
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden relative">
           <MessageList messages={messages} messagesEndRef={messagesEndRef} />
         </div>
 
+        {/* Selected Jobs Context */}
+        {selectedJobs.length > 0 && (
+          <div className="mx-auto flex w-full max-w-4xl px-2 md:px-4">
+            <div className="rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm p-3 brand-shadow-sm">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Selected Context:
+                  </span>
+                  <Badge variant="secondary" className="text-xs">
+                    {selectedJobs.length}
+                  </Badge>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setSelectedJobs([])}
+                  className="h-6 w-6 text-muted-foreground hover:text-foreground hover:bg-muted/50 p-0"
+                  title="Clear all selected context"
+                >
+                  <X className="size-3" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {selectedJobs.map((job) => (
+                  <Badge
+                    key={job.jobId}
+                    variant="default"
+                    className="text-xs flex items-center gap-1"
+                  >
+                    {(() => {
+                      // show clipped name in the badge
+                      const words = job.jobName.split(" ");
+                      if (words.length <= 3) return job.jobName;
+                      return words.slice(0, 3).join(" ") + "...";
+                    })()}
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() =>
+                        setSelectedJobs((prev) =>
+                          prev.filter(
+                            (selectedJob) => selectedJob.jobId !== job.jobId,
+                          ),
+                        )
+                      }
+                      className="h-3 w-3 p-0 ml-1 hover:bg-primary-foreground/20 rounded-full shrink-0"
+                    >
+                      <X className="size-2" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Input Area */}
-        <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl gap-2 border-t border-border/50 bg-linear-to-t from-card via-card/80 to-transparent px-2 pb-3 md:px-4 md:pb-4 pt-2">
+        <div className="relative z-10 mx-auto flex w-full max-w-4xl gap-2 border-t border-border/50 bg-linear-to-t from-card via-card/80 to-transparent px-2 pb-3 md:px-4 md:pb-4 pt-2">
           <MultimodalInput
             input={input}
             setInput={setInput}
@@ -200,6 +276,12 @@ export default function Chat({
             sendMessage={sendMessage}
           />
         </div>
+
+        {/* Jobs Section */}
+        <JobsSection
+          selectedJobs={selectedJobs}
+          onJobSelectionChange={setSelectedJobs}
+        />
       </div>
 
       {/* Mobile Sidebar Overlay */}

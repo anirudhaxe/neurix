@@ -120,7 +120,7 @@ function PureMultimodalInput({
             </Button>
           ) : (
             <PromptInputSubmit
-              className="size-8 rounded-full brand-gradient text-primary-foreground transition-colors duration-200 hover:brand-gradient-dark disabled:bg-muted disabled:text-muted-foreground brand-shadow hover:brand-shadow-lg"
+              className="size-8 rounded-full brand-gradient text-primary-foreground transition-colors duration-200 hover:brand-gradient-dark disabled:bg-muted disabled:text-muted-foreground brand-shadow hover:brand-shadow-lg cursor-pointer"
               data-testid="send-button"
               disabled={!input.trim()}
               status={status}
@@ -135,4 +135,3 @@ function PureMultimodalInput({
 }
 
 export const MultimodalInput = memo(PureMultimodalInput);
-

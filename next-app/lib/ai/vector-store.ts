@@ -11,7 +11,7 @@ const embeddings = new OpenAIEmbeddings({
 
 const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
   url: "http://localhost:6333",
-  collectionName: "neurix-vector-testing",
+  collectionName: process.env.VECTOR_DB_COLLECTION,
 }).catch((error) => {
   console.error("ERROR: Error while loading vector store:", error.message);
 });

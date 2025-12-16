@@ -68,7 +68,7 @@ const jobQueueWorker = new Worker(
         embeddings,
         {
           url: "http://localhost:6333",
-          collectionName: "neurix-vector-testing",
+          collectionName: process.env.VECTOR_DB_COLLECTION,
         },
       );
 
