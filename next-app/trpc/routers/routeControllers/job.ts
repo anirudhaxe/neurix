@@ -4,6 +4,7 @@ import { handleTRPCProcedureError } from "@/lib/utils";
 import { jobStatus, jobType } from "@/db/schema";
 import { deleteJobFromDb, getJobsFromDb } from "@/db/job";
 import { TRPCError } from "@trpc/server";
+import vectorStore from "@/lib/ai/vector-store";
 
 export const jobRouteController = createTRPCRouter({
   getJobs: protectedProcedure
@@ -34,6 +35,18 @@ export const jobRouteController = createTRPCRouter({
           userId: ctx.userId,
           jobId,
         });
+
+        // delete vectors from vector store
+        if (vectorStore) {
+          await vectorStore.delete({
+            filter: {
+              must: [
+                { key: "metadata.userId", match: { value: ctx.userId } },
+                { key: "metadata.jobId", match: { value: jobId } },
+              ],
+            },
+          });
+        }
 
         if (result[0]?.id) {
           return {
