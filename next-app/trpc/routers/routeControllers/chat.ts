@@ -11,7 +11,7 @@ import {
   updateChatTitleInDb,
 } from "@/db/chat";
 import { generateTextCall } from "@/lib/ai/llm";
-import { handleTRPCProcedureError } from "@/lib/utils";
+import { formatTimeAgo, handleTRPCProcedureError } from "@/lib/utils";
 import { TRPCError } from "@trpc/server";
 
 // Zod schema for UIMessage
@@ -39,9 +39,7 @@ export const chatRouteController = createTRPCRouter({
           id: chat.chatId,
           title: chat.title,
           preview,
-          // TODO: implement this type stamp text
-          // timestamp: chat.updatedAt,
-          timestamp: "1 day ago",
+          timestamp: formatTimeAgo(chat.updatedAt),
         };
       });
     } catch (error) {
