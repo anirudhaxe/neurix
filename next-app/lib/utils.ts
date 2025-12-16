@@ -45,10 +45,17 @@ export function handleTRPCProcedureError(error: unknown, context: string) {
 
 // Format time ago
 export function formatTimeAgo(date: Date) {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+    return "Invalid date";
+  }
   const now = new Date();
   const diffInMinutes = Math.floor(
     (now.getTime() - date.getTime()) / (1000 * 60),
   );
+
+  if (diffInMinutes < 0) {
+    return "just now";
+  }
 
   if (diffInMinutes < 60) {
     return `${diffInMinutes}m ago`;
