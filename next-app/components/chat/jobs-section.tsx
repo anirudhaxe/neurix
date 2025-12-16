@@ -221,9 +221,7 @@ export function JobsSection({
                 {jobTypes.map((type) => (
                   <Badge
                     key={type}
-                    variant={
-                      selectedType.includes(type) ? "default" : "outline"
-                    }
+                    variant={selectedType === type ? "default" : "outline"}
                     className="cursor-pointer text-xs transition-all duration-200 hover:scale-105"
                     onClick={() => toggleTypeFilter(type)}
                   >
