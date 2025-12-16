@@ -27,6 +27,10 @@ const jobQueueWorker = new Worker(
 
       // Mark the job in ERROR and return if connection to vector store is not established
       if (!vectorStore) {
+        console.error(
+          "ERROR: Vector store connection not available, cannot process job:",
+          jobId,
+        );
         await sendWebhookEvent(
           createWebhookPayload("job.status.changed", {
             jobId,
