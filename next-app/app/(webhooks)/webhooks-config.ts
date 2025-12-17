@@ -1,18 +1,64 @@
+import { jobStatus } from "@/db/schema";
 import z from "zod";
 
-// providers
+/**
+ * Providers
+ **/
 const providers = ["opencontext-worker"];
 
-// event types
-const jobEventTypes = ["job.status.changed"];
-
-const webhookEventSchema = z.object({
+/**
+ * Base Schema for all webhook events
+ **/
+const baseSchema = z.object({
   provider: z.enum(providers),
   eventId: z.uuid(),
-  // spread more eventTypes here if required
-  eventType: z.enum([...jobEventTypes]),
   timestamp: z.iso.datetime(),
-  data: z.record(z.string(), z.any()),
 });
+
+/**
+ * Job event webhooks config
+ **/
+// Generic type for interpretting custom job events and selections
+type JobEventConfig<T extends string, S extends readonly string[]> = {
+  event: T;
+  selections: S;
+};
+
+// Helper funciton to extend the base schema with custom job eventTypes and data types
+function createJobEventSchema<T extends string, S extends readonly string[]>(
+  config: JobEventConfig<T, S>,
+) {
+  // extend base schema with custom fields
+  return baseSchema.extend({
+    eventType: z.literal(config.event),
+    data: z.object({
+      jobId: z.string(),
+      status: z.enum(config.selections),
+    }),
+  });
+}
+
+// Define custom job events
+const statusEvent = {
+  event: "job.status.changed",
+  selections: jobStatus.enumValues,
+} as const;
+
+// const priorityEvent = {
+//   event: "job.priority.updated",
+//   selections: ["low", "medium", "high"],
+// } as const;
+
+// Create schemas for custom job events
+const statusSchema = createJobEventSchema(statusEvent);
+// const prioritySchema = createJobEventSchema(priorityEvent);
+
+/**
+ * Perform a discriminated union based on the field "eventType"
+ **/
+const webhookEventSchema = z.discriminatedUnion("eventType", [
+  statusSchema,
+  // prioritySchema,
+]);
 
 export { webhookEventSchema };
