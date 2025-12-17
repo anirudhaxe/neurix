@@ -19,7 +19,6 @@ export async function POST(req: Request) {
     headers: await headers(),
   });
 
-  // TODO: handle this error later
   if (!session?.session)
     return Response.json({ message: "Not authorized" }, { status: 401 });
 
