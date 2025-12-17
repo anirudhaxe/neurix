@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { protectedProcedure, createTRPCRouter } from "@/trpc/init";
-import { UIMessage } from "ai";
 
 import {
   createChat,
@@ -14,6 +13,7 @@ import {
 import { generateTextCall } from "@/lib/ai/llm";
 import { formatTimeAgo, handleTRPCProcedureError } from "@/lib/utils";
 import { TRPCError } from "@trpc/server";
+import { UIMessageSchema } from "@/types/zodSchemas/ai-sdk";
 
 export const chatRouteController = createTRPCRouter({
   getChats: protectedProcedure.query(async ({ ctx }) => {
@@ -57,11 +57,13 @@ export const chatRouteController = createTRPCRouter({
         });
 
         // Convert database messages to UIMessage format
-        return messages.map((msg) => ({
-          id: msg.messageId,
-          role: msg.role as UIMessage["role"],
-          parts: msg.parts as UIMessage["parts"],
-        }));
+        return messages.map((msg) =>
+          UIMessageSchema.parse({
+            id: msg.messageId,
+            role: msg.role,
+            parts: msg.parts,
+          }),
+        );
       } catch (error) {
         handleTRPCProcedureError(error, "TRPC QUERY /loadChat");
       }
@@ -70,7 +72,7 @@ export const chatRouteController = createTRPCRouter({
     .input(
       z.object({
         chatId: z.string(),
-        messages: z.array(z.custom<UIMessage>()),
+        messages: z.array(UIMessageSchema),
       }),
     )
     .mutation(async ({ input: { chatId, messages }, ctx }) => {
@@ -133,7 +135,7 @@ export const chatRouteController = createTRPCRouter({
     .input(
       z.object({
         chatId: z.string(),
-        messages: z.array(z.custom<UIMessage>()),
+        messages: z.array(UIMessageSchema),
       }),
     )
     .mutation(async ({ input: { chatId, messages }, ctx }) => {

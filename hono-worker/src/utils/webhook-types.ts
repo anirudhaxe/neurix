@@ -23,7 +23,7 @@ type JobEventConfig<T extends string, S extends readonly string[]> = {
   selections: S;
 };
 
-// Helper funciton to extend the base schema with custom job eventTypes and data types
+// Helper function to extend the base schema with custom job eventTypes and data types
 function createJobEventSchema<T extends string, S extends readonly string[]>(
   config: JobEventConfig<T, S>,
 ) {
