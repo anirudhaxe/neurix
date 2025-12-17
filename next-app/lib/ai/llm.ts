@@ -6,6 +6,7 @@ import {
   wrapLanguageModel,
   generateObject,
   generateText,
+  Tool,
 } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { conditionalRagMiddleware } from "./middleware/rag-middleware";
@@ -31,7 +32,7 @@ async function llmCall({
   userId: string;
   jobIds: string[];
   stopWhen: number;
-  tools?: Record<string, any>;
+  tools?: Record<string, Tool>;
   isRagCall?: boolean;
 }) {
   return streamText({
