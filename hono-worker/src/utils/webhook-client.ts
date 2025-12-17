@@ -1,7 +1,8 @@
-import { type WebhookPayload, generateWebhookSignature } from "./webhook";
+import { generateWebhookSignature } from "./webhook";
+import { type webhookEventType } from "./webhook-types";
 
 export async function sendWebhookEvent(
-  payload: WebhookPayload,
+  payload: webhookEventType,
 ): Promise<void | Response> {
   const signature = generateWebhookSignature(payload);
 

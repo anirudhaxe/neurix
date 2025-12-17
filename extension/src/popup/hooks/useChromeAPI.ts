@@ -8,7 +8,7 @@ export function useChromeAPI() {
         active: true,
         currentWindow: true,
       });
-      
+
       if (!tab.id) {
         throw new Error("No active tab found");
       }
@@ -20,7 +20,7 @@ export function useChromeAPI() {
       });
 
       const text = results[0]?.result || "";
-      
+
       return {
         text,
         tab: {
@@ -37,7 +37,8 @@ export function useChromeAPI() {
 
   const sendMessageToBackground = async (message: {
     action: string;
-    [key: string]: any;
+    text?: string;
+    tab?: ChromeTab;
   }) => {
     try {
       return await chrome.runtime.sendMessage(message);
@@ -53,7 +54,7 @@ export function useChromeAPI() {
         active: true,
         currentWindow: true,
       });
-      
+
       return {
         id: tab.id,
         url: tab.url,

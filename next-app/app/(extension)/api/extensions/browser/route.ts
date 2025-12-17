@@ -1,10 +1,9 @@
-import db from "@/db";
-import { job } from "@/db/schema";
 import { generateTextCall } from "@/lib/ai/llm";
 import { jobQueue } from "@/queues";
 import { handleApiError } from "@/lib/utils";
 import auth from "@/lib/auth";
 import { headers } from "next/headers";
+import { createJob } from "@/db/job";
 
 const withCors = (response: Response) => {
   // Set CORS headers (origin, methods, headers)
@@ -63,17 +62,12 @@ export async function POST(request: Request) {
         ),
       );
 
-    // TODO: move this into a separate db function
-    // Insert job record into database
-    const result = await db
-      .insert(job)
-      .values({
-        userId,
-        name: generatedTitle || "PLACEHOLDER TITLE",
-        status: "QUEUED",
-        type: "TEXT",
-      })
-      .returning({ jobId: job.id });
+    const result = await createJob({
+      userId,
+      name: generatedTitle || "PLACEHOLDER TITLE",
+      status: "QUEUED",
+      type: "TEXT",
+    });
 
     const jobId = result[0]?.jobId;
 

@@ -1,14 +1,7 @@
 import crypto, { randomUUID } from "crypto";
+import { type webhookEventType } from "./webhook-types";
 
-export interface WebhookPayload {
-  provider: string;
-  eventId: string;
-  eventType: string;
-  timestamp: string;
-  data: Record<string, any>;
-}
-
-export function generateWebhookSignature(payload: WebhookPayload): string {
+export function generateWebhookSignature(payload: webhookEventType): string {
   if (!process.env.WEBHOOK_SECRET) {
     throw new Error("WEBHOOK_SECRET environment variable is not set");
   }
@@ -20,9 +13,9 @@ export function generateWebhookSignature(payload: WebhookPayload): string {
 }
 
 export function createWebhookPayload(
-  eventType: string,
-  data: Record<string, any>,
-): WebhookPayload {
+  eventType: webhookEventType["eventType"],
+  data: webhookEventType["data"],
+): webhookEventType {
   return {
     provider: "opencontext-worker",
     eventId: randomUUID(),
@@ -31,4 +24,3 @@ export function createWebhookPayload(
     data,
   };
 }
-

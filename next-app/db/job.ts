@@ -3,6 +3,30 @@ import db from ".";
 import { job, jobStatus, jobType } from "./schema";
 import { z } from "zod";
 
+const createJobSchema = z.object({
+  userId: z.string(),
+  name: z.string(),
+  status: z.enum(jobStatus.enumValues),
+  type: z.enum(jobType.enumValues),
+});
+
+const createJob = ({
+  userId,
+  name,
+  status,
+  type,
+}: z.infer<typeof createJobSchema>) => {
+  return db
+    .insert(job)
+    .values({
+      userId,
+      name,
+      status,
+      type,
+    })
+    .returning({ jobId: job.id });
+};
+
 const updateJobStatusSchema = z.object({
   jobId: z.string(),
   status: z.enum(jobStatus.enumValues),
@@ -59,4 +83,4 @@ const deleteJobFromDb = ({
     .returning({ id: job.id });
 };
 
-export { getJobsFromDb, updateJobStatus, deleteJobFromDb };
+export { getJobsFromDb, updateJobStatus, deleteJobFromDb, createJob };

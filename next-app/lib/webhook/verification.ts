@@ -1,4 +1,6 @@
+import { webhookEventSchema } from "@/app/(webhooks)/webhooks-config";
 import crypto from "crypto";
+import z from "zod";
 
 export interface WebhookVerificationResult {
   isValid: boolean;
@@ -6,7 +8,7 @@ export interface WebhookVerificationResult {
 }
 
 export function verifyWebhookSignature(
-  payload: any,
+  payload: z.infer<typeof webhookEventSchema>,
   signature: string | null,
 ): WebhookVerificationResult {
   if (!signature) {
@@ -33,7 +35,7 @@ export function verifyWebhookSignature(
 }
 
 export async function extractWebhookData(request: Request): Promise<{
-  payload: any;
+  payload: z.infer<typeof webhookEventSchema>;
   signature: string | null;
 }> {
   const payload = await request.json();
@@ -44,4 +46,3 @@ export async function extractWebhookData(request: Request): Promise<{
     signature,
   };
 }
-

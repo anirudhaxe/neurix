@@ -1,4 +1,3 @@
-import { jobStatus } from "@/db/schema";
 import z from "zod";
 
 /**
@@ -24,7 +23,7 @@ type JobEventConfig<T extends string, S extends readonly string[]> = {
   selections: S;
 };
 
-// Helper funciton to extend the base schema with custom job eventTypes and data types
+// Helper function to extend the base schema with custom job eventTypes and data types
 function createJobEventSchema<T extends string, S extends readonly string[]>(
   config: JobEventConfig<T, S>,
 ) {
@@ -41,7 +40,13 @@ function createJobEventSchema<T extends string, S extends readonly string[]>(
 // Define custom job events
 const statusEvent = {
   event: "job.status.changed",
-  selections: jobStatus.enumValues,
+  selections: [
+    "QUEUED", // default status when a new job is created in the job table
+    "CANCELLED", // job is cancelled by the worker/next-app-server due to some validation issue with the job
+    "PROCESSING", // processing is started in the worker
+    "ERROR", // if an error occurs while processing the job in worker
+    "PROCESSED", // job successfully processed in worker
+  ],
 } as const;
 
 // const priorityEvent = {
@@ -60,5 +65,7 @@ const webhookEventSchema = z.discriminatedUnion("eventType", [
   statusSchema,
   // prioritySchema,
 ]);
+
+export type webhookEventType = z.infer<typeof webhookEventSchema>;
 
 export { webhookEventSchema };
