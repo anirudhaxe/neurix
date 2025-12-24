@@ -14,6 +14,7 @@ export interface AssetSelectorProps {
   sourceType: SourceType;
   selectedAsset: AssetType;
   onAssetSelect: (asset: AssetType) => void;
+  isYouTubeUrl?: boolean;
 }
 
 export interface ActionButtonsProps {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GeometricPatternBackground from "@/components/GeometricPatternBackground";
 import Header from "./components/Header";
 import SourceToggle from "./components/SourceToggle";
@@ -16,10 +16,28 @@ export default function App() {
   const [sourceType, setSourceType] = useState<SourceType>("web");
   const [selectedAsset, setSelectedAsset] = useState<AssetType>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState<string>("");
 
   const { data, isPending } = useSession();
 
-  const { scanCurrentPage, sendMessageToBackground } = useChromeAPI();
+  const { scanCurrentPage, sendMessageToBackground, getActiveTab } = useChromeAPI();
+
+  // Check if current URL is a YouTube video being watched
+  const isYouTubeUrl = currentUrl.includes("youtube.com/watch") || currentUrl.includes("youtu.be/");
+
+  // Get current URL on component mount
+  useEffect(() => {
+    const getCurrentUrl = async () => {
+      try {
+        const tab = await getActiveTab();
+        setCurrentUrl(tab.url || "");
+      } catch (error) {
+        console.error("Error getting current URL:", error);
+      }
+    };
+
+    getCurrentUrl();
+  }, [getActiveTab]);
 
   const handleScanPage = async () => {
     if (isScanning) return;
@@ -107,6 +125,7 @@ export default function App() {
               sourceType={sourceType}
               selectedAsset={selectedAsset}
               onAssetSelect={setSelectedAsset}
+              isYouTubeUrl={isYouTubeUrl}
             />
 
             {/* Row 4: URL Preview */}
