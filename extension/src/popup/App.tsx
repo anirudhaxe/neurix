@@ -6,6 +6,7 @@ import AssetSelector from "./components/AssetSelector";
 import UrlPreview from "./components/UrlPreview";
 import ActionButtons from "./components/ActionButtons";
 import Login from "./components/Login";
+import DocumentComingSoon from "./components/DocumentComingSoon";
 import { useChromeAPI } from "./hooks/useChromeAPI";
 import { Loader2 } from "lucide-react";
 import type { SourceType, AssetType } from "./types";
@@ -48,7 +49,8 @@ export default function App() {
     console.log("Collection clicked");
   };
 
-  const isActionDisabled = !selectedAsset || isScanning;
+  const isActionDisabled =
+    sourceType === "document" ? true : !selectedAsset || isScanning;
 
   if (isPending) {
     return (
@@ -96,15 +98,21 @@ export default function App() {
           onSourceTypeChange={setSourceType}
         />
 
-        {/* Row 3: Asset Selection */}
-        <AssetSelector
-          sourceType={sourceType}
-          selectedAsset={selectedAsset}
-          onAssetSelect={setSelectedAsset}
-        />
+        {/* Row 3: Asset Selection or Document Message */}
+        {sourceType === "document" ? (
+          <DocumentComingSoon />
+        ) : (
+          <>
+            <AssetSelector
+              sourceType={sourceType}
+              selectedAsset={selectedAsset}
+              onAssetSelect={setSelectedAsset}
+            />
 
-        {/* Row 4: URL Preview */}
-        <UrlPreview />
+            {/* Row 4: URL Preview */}
+            <UrlPreview />
+          </>
+        )}
 
         {/* Row 5: Main Action Buttons */}
         <ActionButtons
