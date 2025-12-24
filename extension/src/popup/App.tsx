@@ -20,10 +20,13 @@ export default function App() {
 
   const { data, isPending } = useSession();
 
-  const { scanCurrentPage, sendMessageToBackground, getActiveTab } = useChromeAPI();
+  const { scanCurrentPage, sendMessageToBackground, getActiveTab } =
+    useChromeAPI();
 
   // Check if current URL is a YouTube video being watched
-  const isYouTubeUrl = currentUrl.includes("youtube.com/watch") || currentUrl.includes("youtu.be/");
+  const isYouTubeUrl =
+    currentUrl.includes("youtube.com/watch") ||
+    currentUrl.includes("youtu.be/");
 
   // Get current URL on component mount
   useEffect(() => {
@@ -129,7 +132,7 @@ export default function App() {
             />
 
             {/* Row 4: URL Preview */}
-            <UrlPreview />
+            <UrlPreview isYouTubeUrl={isYouTubeUrl} />
           </>
         )}
 
