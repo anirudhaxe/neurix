@@ -14,7 +14,7 @@ import { useSession } from "@/lib/auth/auth-client";
 
 export default function App() {
   const [sourceType, setSourceType] = useState<SourceType>("web");
-  const [selectedAsset, setSelectedAsset] = useState<AssetType>(null);
+  const [selectedAsset, setSelectedAsset] = useState<AssetType>("txt");
   const [isScanning, setIsScanning] = useState(false);
   const [currentUrl, setCurrentUrl] = useState<string>("");
 
@@ -50,8 +50,15 @@ export default function App() {
       const result = await scanCurrentPage();
       await sendMessageToBackground({
         action: "scanPage",
-        text: result.text,
-        tab: result.tab,
+        // In case of video use tab title in text (for generation of job title in next app)
+        text:
+          selectedAsset === "txt"
+            ? result.text
+            : result.tab.title
+              ? result.tab.title
+              : result.text,
+        assetType: selectedAsset,
+        assetUrl: result.tab.url || "",
       });
     } catch (error) {
       console.error("Error scanning page:", error);

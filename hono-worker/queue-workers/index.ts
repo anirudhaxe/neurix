@@ -13,8 +13,16 @@ const jobQueueWorker = new Worker(
       jobId,
       jobName,
       textData,
-    }: { userId: string; jobId: string; jobName: string; textData: string } =
-      job.data;
+      jobType,
+      jobUrl,
+    }: {
+      userId: string;
+      jobId: string;
+      jobName: string;
+      textData: string;
+      jobType: "txt" | "video" | "doc";
+      jobUrl: string;
+    } = job.data;
 
     try {
       // Send webhook event for status change to PROCESSING
@@ -41,6 +49,27 @@ const jobQueueWorker = new Worker(
         return;
       }
 
+      // TODO: handle the video job logic here
+      if (jobType === "video") {
+        console.info("VIDEO JOB RECEIVED: ", {
+          userId,
+          jobId,
+          jobName,
+          textData,
+          jobType,
+          jobUrl,
+        });
+
+        // Send webhook event for status change to PROCESSED
+        await sendWebhookEvent(
+          createWebhookPayload("job.status.changed", {
+            jobId,
+            status: "PROCESSED",
+          }),
+        );
+
+        return;
+      }
       const { documents, ids } = await convertRawTextToDocuments({
         textData,
         userId,

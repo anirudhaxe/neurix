@@ -16,7 +16,7 @@ import type { InferSelectModel } from "drizzle-orm";
 import { user } from "./auth-schema";
 
 // add more types of job types later when working on multi modality, e.g. PDF, VIDEO etc
-export const jobType = pgEnum("job_type", ["TEXT"]);
+export const jobType = pgEnum("job_type", ["TEXT", "YT_VIDEO"]);
 // these job status define the lifecycle of a job
 export const jobStatus = pgEnum("job_status", [
   "QUEUED", // default status when a new job is created in the job table

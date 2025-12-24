@@ -14,7 +14,11 @@ chrome.runtime.onMessage.addListener(async (message) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: message.text }),
+        body: JSON.stringify({
+          text: message.text,
+          assetType: message.assetType,
+          assetUrl: message.assetUrl,
+        }),
       });
 
       if (response.ok) {

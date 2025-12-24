@@ -1,4 +1,4 @@
-import type { ChromeTab, ScanPageResult } from "../types";
+import type { AssetType, ChromeTab, ScanPageResult } from "../types";
 
 export function useChromeAPI() {
   const scanCurrentPage = async (): Promise<ScanPageResult> => {
@@ -37,8 +37,9 @@ export function useChromeAPI() {
 
   const sendMessageToBackground = async (message: {
     action: string;
-    text?: string;
-    tab?: ChromeTab;
+    text: string;
+    assetType: AssetType;
+    assetUrl: string;
   }) => {
     try {
       return await chrome.runtime.sendMessage(message);

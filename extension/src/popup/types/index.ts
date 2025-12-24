@@ -1,5 +1,5 @@
 export type SourceType = "web" | "document";
-export type AssetType = "txt" | "video" | "doc" | null;
+export type AssetType = "txt" | "video" | "doc";
 
 export interface HeaderProps {
   onProfileClick?: () => void;
