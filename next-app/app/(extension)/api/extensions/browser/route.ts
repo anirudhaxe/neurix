@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     let generatedTitle;
     await generateTextCall({
       system:
-        "Create a brief, descriptive title (3-6 words, should be plain string) for sidebar display based on this raw text extracted from a web source:",
+        "Create a brief, descriptive title (3-6 words, should be plain string, without starting and ending quotes) for sidebar display based on this raw text extracted from a web source:",
       prompt: truncatedText,
     })
       .then((result) => (generatedTitle = result.text))
