@@ -29,15 +29,25 @@ export async function POST(request: Request) {
 
     const userId = session.user.id;
 
-    // Validate request body
-    const data = await request.json();
+    // asseting body data types for now. This can be improved later
+    const data: {
+      text: string;
+      assetType: "txt" | "video" | "doc";
+      assetUrl: string;
+    } = await request.json();
 
-    if (!data.text || typeof data.text !== "string") {
+    if (
+      !data.text ||
+      typeof data.text !== "string" ||
+      !data.assetType ||
+      typeof data.assetType !== "string" ||
+      !data.assetUrl ||
+      typeof data.assetUrl !== "string"
+    ) {
       return withCors(
         Response.json(
           {
-            error:
-              "Invalid request: 'text' field is required and must be a string",
+            error: "Invalid request body",
           },
           { status: 400 },
         ),
@@ -51,7 +61,7 @@ export async function POST(request: Request) {
     let generatedTitle;
     await generateTextCall({
       system:
-        "Create a brief, descriptive title (3-6 words, should be plain string) for sidebar display based on this raw text extracted from a web source:",
+        "Create a brief, descriptive title (3-6 words, should be plain string, without starting and ending quotes) for sidebar display based on this raw text extracted from a web source:",
       prompt: truncatedText,
     })
       .then((result) => (generatedTitle = result.text))
@@ -66,7 +76,13 @@ export async function POST(request: Request) {
       userId,
       name: generatedTitle || "PLACEHOLDER TITLE",
       status: "QUEUED",
-      type: "TEXT",
+      // by default take job type as TEXT
+      type:
+        data.assetType === "txt"
+          ? "TEXT"
+          : data.assetType === "video"
+            ? "YT_VIDEO"
+            : "TEXT",
     });
 
     const jobId = result[0]?.jobId;
@@ -82,6 +98,8 @@ export async function POST(request: Request) {
       jobId,
       jobName: generatedTitle,
       textData: data.text,
+      jobType: data.assetType,
+      jobUrl: data.assetUrl,
     });
 
     const response = Response.json({

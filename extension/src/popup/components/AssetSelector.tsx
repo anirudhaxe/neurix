@@ -42,6 +42,7 @@ export default function AssetSelector({
   sourceType,
   selectedAsset,
   onAssetSelect,
+  isYouTubeUrl = false,
 }: AssetSelectorProps) {
   const assets =
     sourceType === "web"
@@ -61,21 +62,25 @@ export default function AssetSelector({
               </svg>
             ),
           },
-          {
-            type: "video" as const,
-            label: "Video",
-            color: "text-[#4DB5CF]",
-            icon: (
-              <svg
-                className="w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z" />
-              </svg>
-            ),
-          },
+          ...(isYouTubeUrl
+            ? [
+                {
+                  type: "video" as const,
+                  label: "Video",
+                  color: "text-[#4DB5CF]",
+                  icon: (
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z" />
+                    </svg>
+                  ),
+                },
+              ]
+            : []),
         ]
       : [
           {
@@ -95,10 +100,11 @@ export default function AssetSelector({
           },
         ];
 
-  // select a default asset type based on the source type
+  // select a default asset type based on the source type and URL
   useEffect(() => {
     if (sourceType === "web") {
-      onAssetSelect("txt");
+      // If YouTube URL, select video by default, otherwise select text
+      onAssetSelect(isYouTubeUrl ? "video" : "txt");
     } else {
       onAssetSelect("doc");
     }
@@ -106,7 +112,7 @@ export default function AssetSelector({
     return () => {
       return;
     };
-  }, [sourceType]);
+  }, [sourceType, isYouTubeUrl]);
 
   return (
     <div className="p-3 border-b border-[rgba(77,181,207,0.2)]">

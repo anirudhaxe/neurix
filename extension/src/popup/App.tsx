@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GeometricPatternBackground from "@/components/GeometricPatternBackground";
 import Header from "./components/Header";
 import SourceToggle from "./components/SourceToggle";
@@ -6,6 +6,7 @@ import AssetSelector from "./components/AssetSelector";
 import UrlPreview from "./components/UrlPreview";
 import ActionButtons from "./components/ActionButtons";
 import Login from "./components/Login";
+import DocumentComingSoon from "./components/DocumentComingSoon";
 import { useChromeAPI } from "./hooks/useChromeAPI";
 import { Loader2 } from "lucide-react";
 import type { SourceType, AssetType } from "./types";
@@ -13,12 +14,33 @@ import { useSession } from "@/lib/auth/auth-client";
 
 export default function App() {
   const [sourceType, setSourceType] = useState<SourceType>("web");
-  const [selectedAsset, setSelectedAsset] = useState<AssetType>(null);
+  const [selectedAsset, setSelectedAsset] = useState<AssetType>("txt");
   const [isScanning, setIsScanning] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState<string>("");
 
   const { data, isPending } = useSession();
 
-  const { scanCurrentPage, sendMessageToBackground } = useChromeAPI();
+  const { scanCurrentPage, sendMessageToBackground, getActiveTab } =
+    useChromeAPI();
+
+  // Check if current URL is a YouTube video being watched
+  const isYouTubeUrl =
+    currentUrl.includes("youtube.com/watch") ||
+    currentUrl.includes("youtu.be/");
+
+  // Get current URL on component mount
+  useEffect(() => {
+    const getCurrentUrl = async () => {
+      try {
+        const tab = await getActiveTab();
+        setCurrentUrl(tab.url || "");
+      } catch (error) {
+        console.error("Error getting current URL:", error);
+      }
+    };
+
+    getCurrentUrl();
+  }, [getActiveTab]);
 
   const handleScanPage = async () => {
     if (isScanning) return;
@@ -28,8 +50,15 @@ export default function App() {
       const result = await scanCurrentPage();
       await sendMessageToBackground({
         action: "scanPage",
-        text: result.text,
-        tab: result.tab,
+        // In case of video use tab title in text (for generation of job title in next app)
+        text:
+          selectedAsset === "txt"
+            ? result.text
+            : result.tab.title
+              ? result.tab.title
+              : result.text,
+        assetType: selectedAsset,
+        assetUrl: result.tab.url || "",
       });
     } catch (error) {
       console.error("Error scanning page:", error);
@@ -48,7 +77,7 @@ export default function App() {
     console.log("Collection clicked");
   };
 
-  const isActionDisabled = !selectedAsset || isScanning;
+  const isActionDisabled = sourceType === "document" ? true : isScanning;
 
   if (isPending) {
     return (
@@ -96,15 +125,22 @@ export default function App() {
           onSourceTypeChange={setSourceType}
         />
 
-        {/* Row 3: Asset Selection */}
-        <AssetSelector
-          sourceType={sourceType}
-          selectedAsset={selectedAsset}
-          onAssetSelect={setSelectedAsset}
-        />
+        {/* Row 3: Asset Selection or Document Message */}
+        {sourceType === "document" ? (
+          <DocumentComingSoon />
+        ) : (
+          <>
+            <AssetSelector
+              sourceType={sourceType}
+              selectedAsset={selectedAsset}
+              onAssetSelect={setSelectedAsset}
+              isYouTubeUrl={isYouTubeUrl}
+            />
 
-        {/* Row 4: URL Preview */}
-        <UrlPreview />
+            {/* Row 4: URL Preview */}
+            <UrlPreview isYouTubeUrl={isYouTubeUrl} />
+          </>
+        )}
 
         {/* Row 5: Main Action Buttons */}
         <ActionButtons

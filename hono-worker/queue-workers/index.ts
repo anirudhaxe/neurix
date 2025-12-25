@@ -4,6 +4,7 @@ import { createWebhookPayload } from "../src/utils/webhook";
 import { sendWebhookEvent } from "../src/utils/webhook-client";
 import vectorStore from "../src/lib/vector-store";
 import convertRawTextToDocuments from "../src/lib/data-processors/textToDocuments";
+import transcribeYtVideo from "../src/lib/data-processors/video-processor/ytUrlTranscriber";
 
 const jobQueueWorker = new Worker(
   "jobQueue",
@@ -13,8 +14,16 @@ const jobQueueWorker = new Worker(
       jobId,
       jobName,
       textData,
-    }: { userId: string; jobId: string; jobName: string; textData: string } =
-      job.data;
+      jobType,
+      jobUrl,
+    }: {
+      userId: string;
+      jobId: string;
+      jobName: string;
+      textData: string;
+      jobType: "txt" | "video" | "doc";
+      jobUrl: string;
+    } = job.data;
 
     try {
       // Send webhook event for status change to PROCESSING
@@ -41,8 +50,37 @@ const jobQueueWorker = new Worker(
         return;
       }
 
+      let rawTextData;
+
+      // for job type video, use transcriptions as raw text
+      if (jobType === "video") {
+        console.info("INFO: Video job received: ", {
+          userId,
+          jobId,
+          jobName,
+          textData,
+          jobType,
+          jobUrl,
+        });
+
+        rawTextData = await transcribeYtVideo(jobUrl);
+      } else {
+        // for job type !video, use textData provided in job as raw text
+        rawTextData = textData;
+      }
+
+      if (!rawTextData) {
+        await sendWebhookEvent(
+          createWebhookPayload("job.status.changed", {
+            jobId,
+            status: "ERROR",
+          }),
+        );
+        return;
+      }
+
       const { documents, ids } = await convertRawTextToDocuments({
-        textData,
+        textData: rawTextData,
         userId,
         jobId,
         jobName,
@@ -51,7 +89,7 @@ const jobQueueWorker = new Worker(
       await vectorStore.addDocuments(documents, { ids });
 
       console.info(
-        `INFO: DOCUMENTS FOR JOB ${jobId} BY USER ${userId} ADDED TO VECTOR STORE`,
+        `INFO: Documents for job ${jobId} by user ${userId} added to vector store`,
       );
 
       // Send webhook event for status change to PROCESSED
@@ -74,6 +112,8 @@ const jobQueueWorker = new Worker(
   },
   {
     connection: kvConnection,
+    lockDuration: 1800000, // 30 minutes in ms
+    lockRenewTime: 60000, // Renew every 60 seconds
   },
 );
 

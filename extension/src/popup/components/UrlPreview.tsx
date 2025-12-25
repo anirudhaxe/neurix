@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useChromeAPI } from "../hooks/useChromeAPI";
 
-export default function UrlPreview() {
+export default function UrlPreview({
+  isYouTubeUrl,
+}: {
+  isYouTubeUrl: boolean;
+}) {
   const [currentUrl, setCurrentUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const { getActiveTab } = useChromeAPI();
@@ -58,16 +62,16 @@ export default function UrlPreview() {
 
   return (
     <div className="px-4 py-3">
-      <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/30 rounded-lg p-3 border border-slate-600/40 backdrop-blur-sm">
+      <div className="bg-linear-to-r from-slate-800/50 to-slate-700/30 rounded-lg p-3 border border-slate-600/40 backdrop-blur-sm">
         <div className="space-y-1">
           {/* First row - Heading */}
           <p className="text-xs text-gray-400">
-            Text will be Contextualized from:
+            {`${isYouTubeUrl ? "Video transcriptions" : "Text"} will be Contextualized from:`}
           </p>
 
           {/* Second row - Pulse and URL */}
           <div className="flex items-center">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2 flex-shrink-0"></div>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2 shrink-0"></div>
             <span className="text-sm text-cyan-300 font-medium truncate block">
               {formatUrl(currentUrl)}
             </span>

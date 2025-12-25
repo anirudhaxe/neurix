@@ -21,9 +21,9 @@ import { trpc } from "@/trpc/client";
 
 type JobStatus = "QUEUED" | "CANCELLED" | "PROCESSING" | "ERROR" | "PROCESSED";
 
-type JobType = "TEXT";
+type JobType = "TEXT" | "YT_VIDEO";
 
-const jobTypes: JobType[] = ["TEXT"];
+const jobTypes: JobType[] = ["TEXT", "YT_VIDEO"];
 
 const statusConfig = {
   QUEUED: {
@@ -210,7 +210,7 @@ export function JobsSection({
                     className="cursor-pointer text-xs transition-all duration-200 hover:scale-105"
                     onClick={() => toggleTypeFilter(type)}
                   >
-                    {type}
+                    {type === "YT_VIDEO" ? "VIDEO" : type}
                   </Badge>
                 ))}
               </div>
@@ -353,7 +353,7 @@ export function JobsSection({
                           </p>
                         </div>
                         <Badge variant="default" className="text-xs mb-2 h-5">
-                          {job.type}
+                          {job.type === "YT_VIDEO" ? "VIDEO" : job.type}
                         </Badge>
                         <div className="flex flex-col gap-1">
                           <span className="text-xs text-muted-foreground">
