@@ -77,8 +77,7 @@ export default function App() {
     console.log("Collection clicked");
   };
 
-  const isActionDisabled =
-    sourceType === "document" ? true : !selectedAsset || isScanning;
+  const isActionDisabled = sourceType === "document" ? true : isScanning;
 
   if (isPending) {
     return (
