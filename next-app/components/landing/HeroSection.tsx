@@ -16,14 +16,15 @@
  */
 
 import React from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 interface HeroSectionProps {
   isLoaded: boolean;
 }
 
 export function HeroSection({ isLoaded }: HeroSectionProps) {
+  const router = useRouter();
   return (
     <section className="relative flex flex-col items-center justify-center py-16 sm:py-20 pt-24">
       <div className="max-w-5xl mx-auto px-6 text-center w-full">
@@ -42,7 +43,7 @@ export function HeroSection({ isLoaded }: HeroSectionProps) {
           <Subheading />
 
           {/* CTA Buttons */}
-          <CTAButtons />
+          <CTAButtons router={router} />
 
           {/* Trust/feature indicators */}
           <TrustIndicators />
@@ -92,8 +93,8 @@ function Headline() {
 function Subheading() {
   return (
     <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4">
-      Seamlessly collect, organize, and chat with your digital context.
-      Turn scattered information into coherent conversations.
+      Seamlessly collect, organize, and chat with your digital context. Turn
+      scattered information into coherent conversations.
     </p>
   );
 }
@@ -102,7 +103,7 @@ function Subheading() {
  * CTAButtons Component
  * Primary and secondary action buttons
  */
-function CTAButtons() {
+function CTAButtons({ router }: { router: ReturnType<typeof useRouter> }) {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4 px-4">
       <Button
@@ -110,7 +111,7 @@ function CTAButtons() {
         size="lg"
         className="group relative overflow-hidden brand-shadow-lg hover:scale-105 transition-all duration-300 w-full sm:w-auto"
       >
-        <Link href="/auth/sign-up">
+        <div className="cursor-pointer" onClick={() => router.push("/sign-up")}>
           <span className="relative z-10 flex items-center gap-2">
             Start Exploring
             <svg
@@ -127,16 +128,16 @@ function CTAButtons() {
               />
             </svg>
           </span>
-        </Link>
+        </div>
       </Button>
-      <Button
-        asChild
-        size="lg"
-        variant="outline"
-        className="border-border/50 hover:bg-card/50 hover:border-primary/50 transition-all duration-300 w-full sm:w-auto"
-      >
-        <Link href="/chat">Try Demo</Link>
-      </Button>
+      {/* <Button */}
+      {/*   asChild */}
+      {/*   size="lg" */}
+      {/*   variant="outline" */}
+      {/*   className="border-border/50 hover:bg-card/50 hover:border-primary/50 transition-all duration-300 w-full sm:w-auto" */}
+      {/* > */}
+      {/*   <Link href="/chat">Try Demo</Link> */}
+      {/* </Button> */}
     </div>
   );
 }

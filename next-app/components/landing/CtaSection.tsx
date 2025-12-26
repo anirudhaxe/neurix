@@ -14,10 +14,11 @@
  */
 
 import React from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export function CtaSection() {
+  const router = useRouter();
   return (
     <section className="relative py-16 sm:py-24 px-4 sm:px-6 overflow-hidden">
       {/* Gradient background overlay */}
@@ -39,16 +40,16 @@ export function CtaSection() {
           <Button
             asChild
             size="lg"
-            className="group relative overflow-hidden brand-shadow-lg hover:scale-105 transition-all duration-300 w-full sm:w-auto"
+            className="group relative overflow-hidden brand-shadow-lg hover:scale-105 transition-all duration-300 w-full sm:w-auto cursor-pointer"
+            onClick={() => router.push("/sign-up")}
           >
-            <Link href="/auth/sign-up">
+            <div>
               <span className="relative z-10">Get Started Free</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-            </Link>
+            </div>
           </Button>
         </div>
       </div>
     </section>
   );
 }
-
