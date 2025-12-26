@@ -16,15 +16,15 @@ function ToolCallDisplay({ part }: { part: ToolPart }) {
     switch (toolType) {
       case "tool-weather":
         return {
-          name: "Weather Tool",
+          name: "Calling Weather Tool",
           icon: Cloud,
           variant: "default" as const,
         };
       case "tool-convertFahrenheitToCelsius":
         return {
-          name: "Temperature Converter",
+          name: "Calling Temperature Converter Tool",
           icon: Thermometer,
-          variant: "secondary" as const,
+          variant: "default" as const,
         };
       default:
         return {
@@ -51,7 +51,10 @@ function ToolCallDisplay({ part }: { part: ToolPart }) {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <Badge variant={toolInfo.variant} className="text-[10px] font-medium">
+            <Badge
+              variant={toolInfo.variant}
+              className="text-[10px] font-medium"
+            >
               {toolInfo.name}
             </Badge>
           </div>
