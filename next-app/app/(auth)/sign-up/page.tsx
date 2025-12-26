@@ -38,7 +38,7 @@ export default function Page() {
         },
         onSuccess: () => {
           setLoading(false);
-          router.push("/");
+          router.push("/chat");
         },
         onError: (ctx) => {
           setLoading(false);

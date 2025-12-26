@@ -11,6 +11,8 @@ import {
   Footer,
   landingAnimations,
 } from "@/components/landing";
+import { useSession } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 /**
  * Main page component
@@ -18,9 +20,18 @@ import {
  * Manages load state and composes all landing page sections.
  */
 export default function Page() {
+  const { data: session, isPending } = useSession();
+  const router = useRouter();
+
   // State for fade-in animation on mount
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Redirecting to /chat if user is already logged in
+  useEffect(() => {
+    if (!isPending && session) {
+      router.push("/chat");
+    }
+  }, [session, isPending, router]);
   /**
    * Initialize load state
    * Runs once on mount
