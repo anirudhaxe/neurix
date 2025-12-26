@@ -4,16 +4,53 @@ import axios from "axios";
 
 function weatherTool() {
   return tool({
-    description: "Get the weather in a location (fahrenheit)",
+    description: "Get the weather of a city",
     inputSchema: z.object({
-      location: z.string().describe("The location to get the weather for"),
+      city: z.string().describe("The city to get the weather for"),
     }),
-    execute: async ({ location }) => {
-      const temperature = Math.round(Math.random() * (90 - 32) + 32);
-      return {
-        location,
-        temperature,
-      };
+    execute: async ({ city }) => {
+      const errorMessage = "Unable to get weather";
+
+      // Fetch Geocode
+      const geoResponse = await axios
+        .get(`https://geocoding-api.open-meteo.com/v1/search`, {
+          params: { name: city, count: 1 },
+        })
+        .catch((error) => {
+          console.error("ERROR: Weather Tool", error);
+          return null;
+        });
+
+      if (
+        !geoResponse ||
+        !geoResponse.data.results ||
+        geoResponse.data.results.length === 0
+      ) {
+        return { response: errorMessage };
+      }
+
+      const { latitude, longitude } = geoResponse.data.results[0];
+
+      // Fetch Weather
+      const weatherResponse = await axios
+        .get(`https://api.open-meteo.com/v1/forecast`, {
+          params: {
+            latitude,
+            longitude,
+            current_weather: true,
+            hourly: "temperature_2m,precipitation",
+            // Add more parameters as needed
+          },
+        })
+        .catch((error) => {
+          console.error("ERROR: Weather Tool", error);
+          return null;
+        });
+
+      if (!weatherResponse || !weatherResponse.data)
+        return { response: errorMessage };
+
+      return { response: weatherResponse.data };
     },
   });
 }
@@ -61,10 +98,10 @@ function webSearchTool() {
         )
         .catch((error) => {
           console.error("ERROR: Web Search Tool", error);
-          return { data: errorMessage };
+          return null;
         });
 
-      if (!response.data) return { response: errorMessage };
+      if (!response || !response.data) return { response: errorMessage };
 
       return {
         response: response.data,
