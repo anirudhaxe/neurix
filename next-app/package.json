@@ -41,6 +41,7 @@
     "drizzle-orm": "0.45.0",
     "ioredis": "5.8.2",
     "lucide-react": "0.555.0",
+    "mathjs": "15.1.0",
     "nanoid": "5.1.6",
     "next": "16.1.1",
     "pg": "8.16.3",

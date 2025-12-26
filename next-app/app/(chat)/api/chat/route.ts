@@ -1,10 +1,6 @@
 import { UIMessage, createIdGenerator } from "ai";
 import { llmCall } from "@/lib/ai/llm";
-import {
-  weatherTool,
-  convertFahrenheitToCelsiusTool,
-  webSearchTool,
-} from "@/lib/ai/tools";
+import { weatherTool, calculatorTool, webSearchTool } from "@/lib/ai/tools";
 import { trpc } from "@/trpc/server";
 import auth from "@/lib/auth";
 import { headers } from "next/headers";
@@ -37,7 +33,7 @@ export async function POST(req: Request) {
     stopWhen: 5,
     tools: {
       weather: weatherTool(),
-      convertFahrenheitToCelsius: convertFahrenheitToCelsiusTool(),
+      calculator: calculatorTool(),
       webSearch: webSearchTool(),
     },
     isRagCall: true,

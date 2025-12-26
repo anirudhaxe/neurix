@@ -1,6 +1,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 import axios from "axios";
+import { evaluate } from "mathjs";
 
 function weatherTool() {
   return tool({
@@ -55,19 +56,42 @@ function weatherTool() {
   });
 }
 
-function convertFahrenheitToCelsiusTool() {
+function calculatorTool() {
   return tool({
-    description: "Convert a temperature in fahrenheit to celsius",
+    description: "Calculate a mathematical expression",
     inputSchema: z.object({
-      temperature: z
-        .number()
-        .describe("The temperature in fahrenheit to convert"),
+      expression: z
+        .string()
+        .describe(
+          'The mathematical expression which needs to be calculated. Expressions will be calculated in "mathjs" library. Examples: "2 + 3 * 4", "(10 + 5) / 3","sin(π/2) + cos(0)","sqrt(16) * 2^3","100 * 1.08^5","log10(100)","min(5, 10, 2)"',
+        ),
     }),
-    execute: async ({ temperature }) => {
-      const celsius = Math.round((temperature - 32) * (5 / 9));
-      return {
-        celsius,
-      };
+    execute: async ({ expression }) => {
+      const errorMessage = "Unable to calculate the expression";
+
+      try {
+        // Evaluate the mathematical expression safely
+        const result = evaluate(expression);
+
+        let response;
+
+        // Format output nicely (avoid scientific notation for simple numbers)
+        if (typeof result === "number" && Number.isFinite(result)) {
+          response =
+            result % 1 === 0
+              ? result.toString()
+              : result.toFixed(6).replace(/\.?0+$/, "");
+        } else {
+          response = result.toString();
+        }
+
+        if (!response) return { response: errorMessage };
+
+        return { response };
+      } catch (error) {
+        console.error("ERROR: Calculator Tool", error);
+        return { response: errorMessage };
+      }
     },
   });
 }
@@ -110,4 +134,4 @@ function webSearchTool() {
   });
 }
 
-export { weatherTool, convertFahrenheitToCelsiusTool, webSearchTool };
+export { weatherTool, calculatorTool, webSearchTool };
