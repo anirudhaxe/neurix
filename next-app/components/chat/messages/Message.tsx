@@ -1,10 +1,65 @@
 "use client";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { User } from "lucide-react";
+import { Cloud, Thermometer, User, Wrench } from "lucide-react";
 import { UIMessage } from "ai";
 import Image from "next/image";
+
+interface ToolPart {
+  type: string;
+}
+
+function ToolCallDisplay({ part }: { part: ToolPart }) {
+  const getToolInfo = (toolType: string) => {
+    switch (toolType) {
+      case "tool-weather":
+        return {
+          name: "Weather Tool",
+          icon: Cloud,
+          variant: "default" as const,
+        };
+      case "tool-convertFahrenheitToCelsius":
+        return {
+          name: "Temperature Converter",
+          icon: Thermometer,
+          variant: "secondary" as const,
+        };
+      default:
+        return {
+          name: "Tool Call",
+          icon: Wrench,
+          variant: "outline" as const,
+        };
+    }
+  };
+
+  const toolInfo = getToolInfo(part.type);
+  const Icon = toolInfo.icon;
+
+  return (
+    <Card className="mt-3 border-brand-200/50 dark:border-brand-900/50 brand-glass bg-gradient-to-br from-brand-50/50 to-transparent dark:from-brand-950/20">
+      <div className="flex items-center gap-3 p-3">
+        {/* Icon */}
+        <div className="shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 flex items-center justify-center ring-1 ring-inset ring-primary/20">
+            <Icon className="w-3.5 h-3.5 text-primary" />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <Badge variant={toolInfo.variant} className="text-[10px] font-medium">
+              {toolInfo.name}
+            </Badge>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 interface MessageProps {
   message: UIMessage;
@@ -66,14 +121,10 @@ export function Message({ message }: MessageProps) {
               case "tool-weather":
               case "tool-convertFahrenheitToCelsius":
                 return (
-                  <Card
+                  <ToolCallDisplay
                     key={`${message.id}-${i}`}
-                    className="mt-2 p-3 brand-glass border border-border/50 brand-shadow-sm"
-                  >
-                    <pre className="text-xs text-muted-foreground overflow-x-auto">
-                      {JSON.stringify(part, null, 2)}
-                    </pre>
-                  </Card>
+                    part={part as ToolPart}
+                  />
                 );
               default:
                 return null;
