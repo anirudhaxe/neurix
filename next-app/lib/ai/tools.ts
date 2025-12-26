@@ -1,5 +1,6 @@
 import { tool } from "ai";
 import { z } from "zod";
+import axios from "axios";
 
 function weatherTool() {
   return tool({
@@ -34,4 +35,42 @@ function convertFahrenheitToCelsiusTool() {
   });
 }
 
-export { weatherTool, convertFahrenheitToCelsiusTool };
+function webSearchTool() {
+  return tool({
+    description: "Search the web for up-to-date information",
+    inputSchema: z.object({
+      query: z.string().describe("The query to be searched on the web"),
+    }),
+    execute: async ({ query }) => {
+      const errorMessage = "Web search tool currently not available";
+
+      const apiKey = process.env.TAVILY_SEARCH_API_KEY;
+
+      if (!apiKey) return { response: errorMessage };
+
+      const response = await axios
+        .post(
+          "https://api.tavily.com/search",
+          { query },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+          },
+        )
+        .catch((error) => {
+          console.error("ERROR: Web Search Tool", error);
+          return { data: errorMessage };
+        });
+
+      if (!response.data) return { response: errorMessage };
+
+      return {
+        response: response.data,
+      };
+    },
+  });
+}
+
+export { weatherTool, convertFahrenheitToCelsiusTool, webSearchTool };

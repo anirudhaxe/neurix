@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Cloud, Thermometer, User, Wrench } from "lucide-react";
+import { Cloud, Thermometer, User, Wrench, Globe } from "lucide-react";
 import { UIMessage } from "ai";
 import Image from "next/image";
 
@@ -24,6 +24,12 @@ function ToolCallDisplay({ part }: { part: ToolPart }) {
         return {
           name: "Calling Temperature Converter Tool",
           icon: Thermometer,
+          variant: "default" as const,
+        };
+      case "tool-webSearch":
+        return {
+          name: "Calling Web Search Tool",
+          icon: Globe,
           variant: "default" as const,
         };
       default:
@@ -123,6 +129,7 @@ export function Message({ message }: MessageProps) {
                 );
               case "tool-weather":
               case "tool-convertFahrenheitToCelsius":
+              case "tool-webSearch":
                 return (
                   <ToolCallDisplay
                     key={`${message.id}-${i}`}
