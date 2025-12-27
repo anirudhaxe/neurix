@@ -1,6 +1,6 @@
 /* =====================================================
    Markdown Styling for OpenContext
-   Theme: Premium Blue-Cyan (#5EB8D0)
+   Theme: Blue-Cyan (#5EB8D0)
    Uses: Brand gradients, glassmorphism, OKLCH colors
    ===================================================== */
 
@@ -8,6 +8,11 @@
   color: inherit;
   line-height: 1.75;
   letter-spacing: -0.01em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
 }
 
 /* =====================================================
@@ -360,7 +365,7 @@
 }
 
 /* =====================================================
-   BLOCKQUOTES - Premium Glass Effect
+   BLOCKQUOTES - Glass Effect
    ===================================================== */
 
 .markdown-content blockquote {
@@ -392,22 +397,80 @@
 }
 
 /* =====================================================
-   TABLES - Premium Glass Design
+   TABLES - Glass Design
    ===================================================== */
 
+/* Table wrapper for horizontal scrolling - use this wrapper for tables that need to scroll */
+.markdown-content .table-wrapper {
+  overflow-x: auto;
+  overflow-y: visible;
+  margin: 1.25rem 0;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px 0 oklch(0 0 0 / 0.15);
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.72 0.18 200 / 0.5) oklch(0.12 0.02 220 / 0.3);
+  /* Ensure content can scroll horizontally */
+  -webkit-overflow-scrolling: touch;
+}
+
+.markdown-content .table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.markdown-content .table-wrapper::-webkit-scrollbar-track {
+  background: oklch(0.12 0.02 220 / 0.3);
+  border-radius: 4px;
+}
+
+.markdown-content .table-wrapper::-webkit-scrollbar-thumb {
+  background: oklch(0.72 0.18 200 / 0.5);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.markdown-content .table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.72 0.18 200 / 0.7);
+}
+
+/* Default table styling */
 .markdown-content table {
   width: 100%;
-  margin: 1.25rem 0;
+  margin: 0;
   border-collapse: separate;
   border-spacing: 0;
-  overflow-x: auto;
-  display: block;
-  white-space: nowrap;
   background: oklch(0.12 0.02 220 / 0.8);
   border-radius: 0.75rem;
   border: 1px solid oklch(0.72 0.18 200 / 0.15);
   backdrop-filter: blur(12px);
+  /* Ensure table doesn't shrink below content */
+  min-width: fit-content;
+  /* Prevent content from wrapping inside cells */
+  white-space: nowrap;
+}
+
+/* Tables inside wrapper should have horizontal scrolling */
+.markdown-content .table-wrapper table {
+  width: auto;
+  min-width: fit-content;
+}
+
+/* Table not in wrapper - add margins */
+.markdown-content > table {
+  margin: 1.25rem 0;
   box-shadow: 0 4px 16px 0 oklch(0 0 0 / 0.15);
+}
+
+/* Allow table cells to wrap on very small screens if needed */
+@media (max-width: 640px) {
+  .markdown-content table td,
+  .markdown-content table th,
+  .markdown-content .table-wrapper table td,
+  .markdown-content .table-wrapper table th {
+    /* Allow wrapping for better mobile experience */
+    white-space: normal;
+    min-width: 4rem;
+  }
 }
 
 .markdown-content thead {
@@ -739,13 +802,30 @@
   background: linear-gradient(180deg, oklch(0.75 0.2 200 / 0.15), transparent);
 }
 
+.dark .markdown-content .table-wrapper {
+  scrollbar-color: oklch(0.75 0.2 200 / 0.6) oklch(0.1 0.02 220 / 0.3);
+}
+
+.dark .markdown-content .table-wrapper::-webkit-scrollbar-track {
+  background: oklch(0.1 0.02 220 / 0.3);
+}
+
+.dark .markdown-content .table-wrapper::-webkit-scrollbar-thumb {
+  background: oklch(0.75 0.2 200 / 0.6);
+}
+
+.dark .markdown-content .table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.75 0.2 200 / 0.8);
+}
+
 /* =====================================================
    RESPONSIVE DESIGN
    ===================================================== */
 
-@media (max-width: 640px) {
+/* Large Mobile & Small Tablet */
+@media (max-width: 768px) {
   .markdown-content h1 {
-    font-size: 1.75rem;
+    font-size: 1.625rem;
   }
 
   .markdown-content h2 {
@@ -756,21 +836,239 @@
     font-size: 1.125rem;
   }
 
-  .markdown-content table {
+  .markdown-content h4 {
+    font-size: 1rem;
+  }
+
+  .markdown-content p {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+
+  .markdown-content table,
+  .markdown-content .table-wrapper table {
     font-size: 0.8125rem;
   }
 
   .markdown-content th,
-  .markdown-content td {
-    padding: 0.625rem 0.875rem;
+  .markdown-content td,
+  .markdown-content .table-wrapper th,
+  .markdown-content .table-wrapper td {
+    padding: 0.5rem 0.625rem;
   }
 
   .markdown-content blockquote {
-    padding: 1rem 1.25rem;
+    padding: 0.875rem 1rem;
+    margin: 1rem 0;
   }
 
   .markdown-content pre {
-    padding: 1rem;
+    padding: 0.875rem;
+    margin: 1rem 0;
+    font-size: 0.8125em;
+  }
+
+  .markdown-content ul,
+  .markdown-content ol {
+    padding-left: 1.25rem;
+  }
+
+  .markdown-content ul li,
+  .markdown-content ol li {
+    padding-left: 1rem;
+  }
+
+  .markdown-content code:not(pre code) {
+    font-size: 0.8125em;
+    padding: 0.125rem 0.375rem;
+  }
+
+  .markdown-content img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Mobile Phones */
+@media (max-width: 640px) {
+  .markdown-content h1 {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .markdown-content h2 {
+    font-size: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .markdown-content h3 {
+    font-size: 1.0625rem;
+    margin-top: 1.125rem;
+  }
+
+  .markdown-content h4 {
+    font-size: 0.9375rem;
+  }
+
+  .markdown-content p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  /* Tables - ensure horizontal scrolling without negative margins */
+  .markdown-content .table-wrapper {
+    margin: 0.875rem 0;
+    border-radius: 0.5rem;
+    max-width: 100%;
+  }
+
+  .markdown-content table,
+  .markdown-content .table-wrapper table {
+    font-size: 0.75rem;
+  }
+
+  .markdown-content th,
+  .markdown-content td,
+  .markdown-content .table-wrapper th,
+  .markdown-content .table-wrapper td {
+    padding: 0.375rem 0.5rem;
+    min-width: 3rem;
+  }
+
+  .markdown-content th {
+    font-size: 0.6875rem;
+    letter-spacing: 0.03em;
+  }
+
+  .markdown-content blockquote {
+    padding: 0.75rem 0.875rem;
+    margin: 0.875rem 0;
+    font-size: 0.875rem;
+  }
+
+  .markdown-content pre {
+    padding: 0.75rem;
+    margin: 0.875rem 0;
+    font-size: 0.75em;
+    line-height: 1.5;
+    border-radius: 0.5rem;
+  }
+
+  .markdown-content pre code {
+    font-size: 0.75em;
+  }
+
+  /* Lists - reduce padding on mobile */
+  .markdown-content ul,
+  .markdown-content ol {
+    padding-left: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .markdown-content ul li {
+    padding-left: 0.875rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .markdown-content ol li {
+    padding-left: 0.25rem;
+    margin-bottom: 0.375rem;
+  }
+
+  /* Inline code - smaller on mobile */
+  .markdown-content code:not(pre code) {
+    font-size: 0.8125em;
+    padding: 0.0625rem 0.25rem;
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Images - ensure they don't overflow */
+  .markdown-content img {
+    border-radius: 0.5rem;
+    margin: 0.75rem 0;
+    border-width: 1px;
+  }
+
+  /* Details/Summary - smaller on mobile */
+  .markdown-content details {
+    margin: 0.875rem 0;
+    border-radius: 0.5rem;
+  }
+
+  .markdown-content summary {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  .markdown-content details > *:not(summary) {
+    padding: 0 0.875rem 0.875rem;
+  }
+
+  /* Links - ensure proper wrapping */
+  .markdown-content a {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Table wrapper scrollbar styling for mobile */
+  .markdown-content .table-wrapper::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .markdown-content .table-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+  }
+
+  .markdown-content .table-wrapper::-webkit-scrollbar-track {
+    border-radius: 2px;
+  }
+}
+
+/* Very small screens (iPhone SE, etc.) */
+@media (max-width: 375px) {
+  .markdown-content h1 {
+    font-size: 1.375rem;
+  }
+
+  .markdown-content h2 {
+    font-size: 1.125rem;
+  }
+
+  .markdown-content h3 {
+    font-size: 1rem;
+  }
+
+  .markdown-content p {
+    font-size: 0.8125rem;
+  }
+
+  .markdown-content table,
+  .markdown-content .table-wrapper table {
+    font-size: 0.6875rem;
+  }
+
+  .markdown-content th,
+  .markdown-content td,
+  .markdown-content .table-wrapper th,
+  .markdown-content .table-wrapper td {
+    padding: 0.25rem 0.375rem;
+    min-width: 2.5rem;
+  }
+
+  .markdown-content th {
+    font-size: 0.625rem;
+  }
+
+  .markdown-content pre {
+    font-size: 0.6875em;
+    padding: 0.5rem;
+  }
+
+  .markdown-content blockquote {
+    font-size: 0.8125rem;
+    padding: 0.625rem 0.75rem;
   }
 }
 
@@ -798,9 +1096,15 @@
     box-shadow: none;
   }
 
-  .markdown-content table {
+  .markdown-content table,
+  .markdown-content div.table-wrapper table {
     background: oklch(0.95 0.01 200);
     border-color: oklch(0.7 0.02 200);
+    box-shadow: none;
+  }
+
+  .markdown-content div.table-wrapper {
+    overflow: visible;
     box-shadow: none;
   }
 }
@@ -828,6 +1132,48 @@
 /* =====================================================
    ANIMATIONS
    ===================================================== */
+
+/* =====================================================
+   PROSE OVERRIDES FOR BETTER CONTROL
+   ===================================================== */
+
+/* Ensure max-width doesn't cause overflow */
+.markdown-content {
+  max-width: 100%;
+}
+
+/* Prevent prose from breaking layout */
+.markdown-content * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Fix for code blocks - maintain formatting but allow horizontal scrolling */
+.markdown-content pre {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for inline code with long content */
+.markdown-content code:not(pre code) {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Fix for long URLs in links */
+.markdown-content a {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+/* Fix for long table content */
+.markdown-content td,
+.markdown-content th {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
 
 @keyframes fadeIn {
   from {
