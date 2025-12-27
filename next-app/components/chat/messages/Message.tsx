@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/card";
 import { Cloud, User, Wrench, Globe, Calculator } from "lucide-react";
 import { UIMessage } from "ai";
 import Image from "next/image";
+import { MarkdownRenderer } from "./MarkdownRenderer";
+import "./markdown.css";
 
 interface ToolPart {
   type: string;
@@ -120,12 +122,11 @@ export function Message({ message }: MessageProps) {
             switch (part.type) {
               case "text":
                 return (
-                  <div
+                  <MarkdownRenderer
                     key={`${message.id}-${i}`}
-                    className="whitespace-pre-wrap text-foreground leading-relaxed"
-                  >
-                    {part.text}
-                  </div>
+                    content={part.text}
+                    className="text-foreground leading-relaxed"
+                  />
                 );
               case "tool-weather":
               case "tool-calculator":
