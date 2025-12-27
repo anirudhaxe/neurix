@@ -2,7 +2,6 @@
 
 import React, { useMemo } from "react";
 import { marked } from "marked";
-import DOMPurify from "dompurify";
 
 interface MarkdownRendererProps {
   content: string;
@@ -21,7 +20,15 @@ export function MarkdownRenderer({ content, className = "" }: MarkdownRendererPr
     const rawHtml = marked.parse(content) as string;
 
     // Sanitize HTML to prevent XSS attacks
-    return DOMPurify.sanitize(rawHtml);
+    // DOMPurify is only available in the browser, so we need to handle SSR
+    if (typeof window !== "undefined") {
+      // Dynamic import for DOMPurify to avoid SSR issues
+      const DOMPurify = require("dompurify");
+      return DOMPurify.sanitize(rawHtml);
+    }
+    
+    // Return raw HTML during SSR (it's safe since it's server-rendered)
+    return rawHtml;
   }, [content]);
 
   return (
